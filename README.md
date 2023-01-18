@@ -7,24 +7,24 @@ the observer location, a date between January 1, 1900 and January 1, 2100, and a
 clock time in local hours and minutes.
 
 - [ ] The software system will generate and save star map images to disk in the Joint 
-Photographic Experts Group (JPEG) format.  Resolution shall be a minimum of 300 
+Photographic Experts Group (JPEG) format. Resolution shall be a minimum of 300 
 dpi and the image should fit on a standard 8.5 x 11 sheet of paper when printed.
 
 - [ ] Images shall be displayed on screen in a scrollable window.
 
 - [ ] The star map images shall include the approximately 20,000 stars in the Yale Star 
-Catalog.  Stars must be drawn so as to indicate visually the magnitude of the star.  
-Only stars of 6th magnitude and less need to be included.  Named stars shall have a 
+Catalog. Stars must be drawn so as to indicate visually the magnitude of the star.  
+Only stars of 6th magnitude and less need to be included. Named stars shall have a 
 label next to them.  For the on-screen display the user shall be able to show or hide 
 the labels.
 
 - [ ] All major constellations shall be labeled and lines shall be drawn to connect the stars 
-of constellations in the form familiar to all amateur astronomers.  For the on-screen 
+of constellations in the form familiar to all amateur astronomers. For the on-screen 
 display the user shall be able to show or hide the labels.
 
 - [ ] The star map images shall include the locations of all major planets (Mercury, Venus, 
 Mars, Jupiter, Saturn, Uranus, and Neptune) visible at the given date and time.  
-Labels and icons on the map shall identify each.  For the on-screen display the user 
+Labels and icons on the map shall identify each. For the on-screen display the user 
 shall be able to show or hide the labels.
 
 - [ ] The star map images shall include the location and phase of the moon, if visible, at 

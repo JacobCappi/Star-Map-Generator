@@ -46,7 +46,7 @@ class StarMap:
         # Generate the star map image and save it to disk in the JPEG format
         # ...
         image.save(filename, 'JPEG')
-        return self.messier_objects
+        return image
     def show_on_screen(self, star_map_image):
         window = tk.Tk()
         window.title("Star Map")

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3484606e-73b1-4c9e-a933-48efd61b5d00" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CelestialObject.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/StarMap.py" afterDir="false" />
-    </list>
+    <list default="true" id="3484606e-73b1-4c9e-a933-48efd61b5d00" name="Changes" comment="Basic template for the StarMap and CelestialObject classes." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,6 +44,18 @@
       <option name="presentableId" value="Default" />
       <updated>1675989781924</updated>
     </task>
+    <task id="LOCAL-00001" summary="Basic template for the StarMap and CelestialObject classes.">
+      <created>1675991367172</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1675991367172</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Basic template for the StarMap and CelestialObject classes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic template for the StarMap and CelestialObject classes." />
   </component>
 </project>

@@ -19,10 +19,20 @@ class StarMap:
             reader = csv.reader(f)
             for row in reader:
                 star = {}
-                star['name'] = row[0]
-                star['right_ascension'] = float(row[1])
-                star['declination'] = float(row[2])
-                star['magnitude'] = float(row[3])
+                star['StarID'] = row[0]
+                star['Hip'] = float(row[1])
+                star['HD'] = float(row[2])
+                star['HR'] = float(row[3])
+                star['Gliese'] = float(row[4])
+                star['BayerFlamesteed'] = float(row[5])
+                star['ProperName'] = float(row[6])
+                star['RA'] = float(row[7])
+                star['Dec'] = float(row[8])
+                star['Distance'] = float(row[9])
+                star['Mag'] = float(row[10])
+                star['AbsMag'] = float(row[11])
+                star['Spectrum'] = float(row[12])
+                star['ColorIndex'] = float(row[13])
                 stars.append(star)
         self.stars = stars
         return self.stars

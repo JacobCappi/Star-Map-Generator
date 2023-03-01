@@ -4,12 +4,12 @@ import csv
 import math
 class StarMap:
     def __init__(self, observer_location, date_time):
-        self.observer_location = observer_location
-        self.date_time = date_time
+        #self.observer_location = observer_location
+        #self.date_time = date_time
         self.star_catalog = self.load_star_catalog()
-        self.planets = self.get_planets_location()
-        self.moon = self.get_moon_location()
-        self.messier_objects = self.get_messier_objects_location()
+        #self.planets = self.get_planets_location()
+        #self.moon = self.get_moon_location()
+        #self.messier_objects = self.get_messier_objects_location()
 
     def load_star_catalog(self):
         # Load the star catalog data from the Yale Star Catalog
@@ -17,24 +17,58 @@ class StarMap:
         stars = []
         with open('hyg.csv', 'r') as f:
             reader = csv.reader(f)
+            next(reader) # skip the first row
             for row in reader:
+                if all(val.strip() == '' for val in row):
+                    break  # exit loop if row is completely empty
                 star = {}
-                star['StarID'] = row[0]
-                star['Hip'] = float(row[1])
-                star['HD'] = float(row[2])
-                star['HR'] = float(row[3])
-                star['Gliese'] = float(row[4])
-                star['BayerFlamesteed'] = float(row[5])
-                star['ProperName'] = float(row[6])
-                star['RA'] = float(row[7])
-                star['Dec'] = float(row[8])
-                star['Distance'] = float(row[9])
-                star['Mag'] = float(row[10])
-                star['AbsMag'] = float(row[11])
-                star['Spectrum'] = float(row[12])
-                star['ColorIndex'] = float(row[13])
+                if row[0].strip() != '':
+                    star['StarID'] = row[0]
+                    pass
+                if row[1].strip() != '':
+                    star['Hip'] = float(row[1])
+                    pass
+                if row[2].strip() != '':
+                    star['HD'] = float(row[2])
+                    pass
+                if row[3].strip() != '':
+                    star['HR'] = row[3]
+                    pass
+                if row[4].strip() != '':
+                    star['Gliese'] = row[4]
+                    pass
+                if row[5].strip() != '':
+                    star['BayerFlamesteed'] = row[5]
+                    pass
+                if row[6].strip() != '':
+                    star['ProperName'] = row[6]
+                    pass
+                if row[7].strip() != '':
+                    star['RA'] = float(row[7])
+                    pass
+                if row[8].strip() != '':
+                    star['Dec'] = float(row[8])
+                    pass
+                if row[9].strip() != '':
+                    star['Distance'] = float(row[9])
+                    pass
+                if row[10].strip() != '':
+                    star['Mag'] = float(row[10])
+                    pass
+                if row[11].strip() != '':
+                    star['AbsMag'] = float(row[11])
+                    pass
+                if row[12].strip() != '':
+                    star['Spectrum'] = row[12]
+                    pass
+                if row[13].strip() != '':
+                    star['ColorIndex'] = float(row[13])
+                    pass
+
+                #if all(star.values()): #if any value is false we skip and don't add to list
                 stars.append(star)
         self.stars = stars
+        #print (self.stars)
         return self.stars
 
     def get_planets_location(self):
@@ -93,10 +127,10 @@ def main():
     star_map.show_on_screen()
 
     # Ask the user if they want to save the image to disk
-    save_image = input("Do you want to save the image to disk? (yes/no): ")
-    if save_image.lower() == 'yes':
-        filename = input("Enter filename: ")
-        star_map.save_image(filename)
+    #save_image = input("Do you want to save the image to disk? (yes/no): ")
+    #if save_image.lower() == 'yes':
+        #filename = input("Enter filename: ")
+        #star_map.save_image(filename)
 
 if __name__ == '__main__':
     main()

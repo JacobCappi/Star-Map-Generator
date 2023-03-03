@@ -1,4 +1,6 @@
 import tkinter as tk
+from Star import Star
+
 from PIL import Image, ImageTk
 import csv
 import math
@@ -11,64 +13,23 @@ class StarMap:
         #self.moon = self.get_moon_location()
         #self.messier_objects = self.get_messier_objects_location()
 
+    # Load the star catalog data from the Yale Star Catalog
+    # Return the data as a dictionary with star names as keys and locations as values
     def load_star_catalog(self):
-        # Load the star catalog data from the Yale Star Catalog
-        # Return the data as a dictionary with star names as keys and locations as values
-        stars = []
+        allStarsfromFile = []
+
         with open('hyg.csv', 'r') as f:
             reader = csv.reader(f)
             next(reader) # skip the first row
             for row in reader:
                 if all(val.strip() == '' for val in row):
                     break  # exit loop if row is completely empty
-                star = {}
-                if row[0].strip() != '':
-                    star['StarID'] = row[0]
-                    pass
-                if row[1].strip() != '':
-                    star['Hip'] = float(row[1])
-                    pass
-                if row[2].strip() != '':
-                    star['HD'] = float(row[2])
-                    pass
-                if row[3].strip() != '':
-                    star['HR'] = row[3]
-                    pass
-                if row[4].strip() != '':
-                    star['Gliese'] = row[4]
-                    pass
-                if row[5].strip() != '':
-                    star['BayerFlamesteed'] = row[5]
-                    pass
-                if row[6].strip() != '':
-                    star['ProperName'] = row[6]
-                    pass
-                if row[7].strip() != '':
-                    star['RA'] = float(row[7])
-                    pass
-                if row[8].strip() != '':
-                    star['Dec'] = float(row[8])
-                    pass
-                if row[9].strip() != '':
-                    star['Distance'] = float(row[9])
-                    pass
-                if row[10].strip() != '':
-                    star['Mag'] = float(row[10])
-                    pass
-                if row[11].strip() != '':
-                    star['AbsMag'] = float(row[11])
-                    pass
-                if row[12].strip() != '':
-                    star['Spectrum'] = row[12]
-                    pass
-                if row[13].strip() != '':
-                    star['ColorIndex'] = float(row[13])
-                    pass
+                allStarsfromFile.append(Star(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12], row[13]))
+        self.stars = allStarsfromFile
 
-                #if all(star.values()): #if any value is false we skip and don't add to list
-                stars.append(star)
-        self.stars = stars
-        #print (self.stars)
+        print (vars(allStarsfromFile[0]))
+        print (vars(allStarsfromFile[1]))
+
         return self.stars
 
     def get_planets_location(self):
@@ -91,6 +52,7 @@ class StarMap:
         # ...
         image.save(filename, 'JPEG')
         return image
+
     def show_on_screen(self, star_map_image):
         window = tk.Tk()
         window.title("Star Map")

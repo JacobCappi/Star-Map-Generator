@@ -24,10 +24,11 @@ class StarMap:
             for row in reader:
                 if all(val.strip() == '' for val in row):
                     break  # exit loop if row is completely empty
-                allStarsfromFile.append(Star(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12], row[13]))
+                if float(row[10]) <= 6:
+                    allStarsfromFile.append(Star(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12], row[13]))
+
         self.stars = allStarsfromFile
 
-        print (vars(allStarsfromFile[0]))
         print (vars(allStarsfromFile[1]))
 
         return self.stars
@@ -86,7 +87,7 @@ def main():
     star_map = StarMap(observer_location, date_time)
 
     # Show the star map on screen
-    star_map.show_on_screen()
+    #star_map.show_on_screen()
 
     # Ask the user if they want to save the image to disk
     #save_image = input("Do you want to save the image to disk? (yes/no): ")

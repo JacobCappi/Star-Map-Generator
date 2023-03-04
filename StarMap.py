@@ -29,8 +29,8 @@ class StarMap:
 
         self.stars = allStarsfromFile
 
-        print (vars(allStarsfromFile[1]))
-
+        #print (vars(allStarsfromFile[1]))
+        print(allStarsfromFile.__sizeof__())
         return self.stars
 
     def get_planets_location(self):

@@ -61,7 +61,7 @@ class StarMap:
 
         # Open the star map image
         image = Image.open(star_map_image)
-        image = image.resize((800, 600), Image.ANTIALIAS)
+        image = image.resize((800, 600))
         image = ImageTk.PhotoImage(image)
 
         # Display the image in a scrollable window
@@ -82,29 +82,31 @@ class StarMap:
 def main():
     while True:
         # Ask the user to enter the observer location, date and time
-        observer_location = input("Enter observer location (latitude and longitude in degrees and minutes): ")
-        inputVariables = observer_location.split()
+        observer_location = input("Enter observer location (latitude and longitude "
+                                  "in degrees and minutes '00 00 00 D'): ")
 
-        if len(inputVariables) > 4:
+        input_variables = observer_location.split()
+
+        if len(input_variables) > 4:
             print("ERROR: More than 4 inputs (Degrees, minutes, seconds, direction) recognized in input, try again.")
             continue
-        degrees = inputVariables[0]
-        minutes = inputVariables[1]
-        seconds = inputVariables[2]
-        direction = inputVariables[3]
+        degrees = input_variables[0]
+        minutes = input_variables[1]
+        seconds = input_variables[2]
+        direction = input_variables[3]
 
         print("degrees: " + degrees + " minutes: " + minutes + " seconds: " + seconds + " direction: " + direction)
         break
     while True:
         date_time = input("Enter date and time in the format 'YYYY-MM-DD HH:MM': ")
-        inputVariables2 = date_time.split()
+        input_variables2 = date_time.split()
 
-        if len(inputVariables2) > 2:
+        if len(input_variables2) > 2:
             print("ERROR: More than 2 inputs (Date, Time) recognized in input, try again.")
             continue
 
-        date = inputVariables2[0]
-        time = inputVariables2[1]
+        date = input_variables2[0]
+        time = input_variables2[1]
 
         try:
             # Parse the input string into a datetime object
@@ -125,7 +127,7 @@ def main():
     star_map = StarMap(observer_location, date_time)
 
     # Show the star map on screen
-    #star_map.show_on_screen()
+    star_map.show_on_screen("starmapTest.png")
 
     # Ask the user if they want to save the image to disk
     #save_image = input("Do you want to save the image to disk? (yes/no): ")

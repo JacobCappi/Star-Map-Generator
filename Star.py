@@ -77,33 +77,33 @@ class Star:
 
     @starId.setter
     def starId(self, value):
-        if (value.isnumeric()):
+        try:
             self._starId = float(value)
-        else:
-            self._starId = None
+        except:
+            pass
 
     @hip.setter
     def hip(self, value):
-        if (value.isnumeric()):
+        try:
             self._hip = float(value)
-        else:
-            self._hip = None
+        except:
+            pass
 
 
     @hd.setter
     def hd(self, value):
-        if (value.isnumeric()):
+        try:
             self._hd = float(value)
-        else:
-            self._hd = None
+        except:
+            pass
 
 
     @hr.setter
     def hr(self, value):
-        if (value.isnumeric()):
+        try:
             self._hr = value
-        else:
-            self._hr = None
+        except:
+            pass
 
 
     @gliese.setter
@@ -120,42 +120,42 @@ class Star:
 
     @ra.setter
     def ra(self, value):
-        if (value.isnumeric()):
+        try:
             self._ra = float(value)
-        else:
-            self._ra = None
+        except:
+            pass
 
 
     @dec.setter
     def dec(self, value):
-        if (value.isnumeric()):
+        try:
             self._dec = float(value)
-        else:
-            self._dec = None
+        except:
+            pass
 
 
     @distance.setter
     def distance(self, value):
-        if (value.isnumeric()):
+        try:
             self._distance = float(value)
-        else:
-            self._distance = None
+        except:
+            pass
 
 
     @mag.setter
     def mag(self, value):
-        if (value.isnumeric()):
+        try:
             self._mag = float(value)
-        else:
-            self._mag = None
+        except:
+            pass
 
 
     @absMag.setter
     def absMag(self, value):
-        if (value.isnumeric()):
+        try:
             self._absMag = float(value)
-        else:
-            self._absMag = None
+        except:
+            pass
 
 
     @spectrum.setter
@@ -164,7 +164,7 @@ class Star:
 
     @colorIndex.setter
     def colorIndex(self, value):
-        if (value.isnumeric()):
+        try:
             self._colorIndex = float(value)
-        else:
-            self._colorIndex = None
+        except:
+            pass

@@ -1,9 +1,10 @@
 import tkinter as tk
 from Star import Star
-
 from PIL import Image, ImageTk
+from datetime import datetime
 import csv
 import math
+
 class StarMap:
     def __init__(self, observer_location, date_time):
         #self.observer_location = observer_location
@@ -29,8 +30,8 @@ class StarMap:
 
         self.stars = allStarsfromFile
 
-        #print (vars(allStarsfromFile[1]))
-        print(allStarsfromFile.__sizeof__())
+        print (vars(allStarsfromFile[5]))
+        #print(len(allStarsfromFile))
         return self.stars
 
     def get_planets_location(self):
@@ -79,9 +80,46 @@ class StarMap:
 
 # Create a main function to run the program
 def main():
-    # Ask the user to enter the observer location, date and time
-    observer_location = input("Enter observer location (latitude and longitude in degrees and minutes): ")
-    date_time = input("Enter date and time (YYYY-MM-DD HH:MM): ")
+    while True:
+        # Ask the user to enter the observer location, date and time
+        observer_location = input("Enter observer location (latitude and longitude in degrees and minutes): ")
+        inputVariables = observer_location.split()
+
+        if len(inputVariables) > 4:
+            print("ERROR: More than 4 inputs (Degrees, minutes, seconds, direction) recognized in input, try again.")
+            continue
+        degrees = inputVariables[0]
+        minutes = inputVariables[1]
+        seconds = inputVariables[2]
+        direction = inputVariables[3]
+
+        print("degrees: " + degrees + " minutes: " + minutes + " seconds: " + seconds + " direction: " + direction)
+        break
+    while True:
+        date_time = input("Enter date and time in the format 'YYYY-MM-DD HH:MM': ")
+        inputVariables2 = date_time.split()
+
+        if len(inputVariables2) > 2:
+            print("ERROR: More than 2 inputs (Date, Time) recognized in input, try again.")
+            continue
+
+        date = inputVariables2[0]
+        time = inputVariables2[1]
+
+        try:
+            # Parse the input string into a datetime object
+            datetime_object = datetime.strptime(date_time, '%Y-%m-%d %H:%M')
+
+            # Check if the datetime object is valid
+            if 1900 < datetime_object.year < 2100:
+                print("Date: " + date + " Time: " + time)
+            else:
+                print("Invalid datetime")
+                continue
+        except ValueError:
+            print("Invalid datetime format")
+            continue
+        break
 
     # Create an instance of the StarMap class
     star_map = StarMap(observer_location, date_time)

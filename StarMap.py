@@ -12,6 +12,12 @@ class StarMap:
 
     _stars = []
     _planets = []
+
+    _lat = 0
+    _long = 0
+
+    _isNorth = True
+    _isEast = False
     
     # TODO: change this to input
     _time = datetime.now()
@@ -20,9 +26,8 @@ class StarMap:
 
     def __init__(self, observer_location, date_time):
         (self._stars, self._planets) = self.load_star_catalog()
-        #self.printPlanets()
 
-        self._equations.InitMathEquations(self._time, self._planets)
+        self._equations.InitMathEquations(self._time, self._planets, self._lat, self._long, self._isNorth, self._isEast)
 
         planetCoordinates = [[]]
         planetCoordinates = self._equations.GetPlanetsRAandD()

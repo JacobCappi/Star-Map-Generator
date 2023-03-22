@@ -12,6 +12,9 @@ class MathEquations:
     _cy = 0
     _julianDate = 0
 
+    _lat = 0
+    _long = 0
+
     _planets = []
     
 # API
@@ -61,19 +64,29 @@ class MathEquations:
             zEQ = pYg*math.sin(ecl) + pZg*math.cos(ecl)
 
             pRA = self._moduloTwoPi(math.atan2(yEQ, xEQ)) * self.__DEGS
-            pD = math.atan(zEQ / math.sqrt(xEQ**2 + yEQ **2)) *self.__DEGS
+            pDec = math.atan(zEQ / math.sqrt(xEQ**2 + yEQ **2)) *self.__DEGS
             pDist = math.sqrt(xEQ**2 + yEQ**2 + zEQ**2)
 
-            planetCoords.append([pRA, pD, pDist])
+            planetCoords.append([pRA, pDec, pDist])
 
             print("\n**************************")
             print(p.planetName)
-            print(pRA, pD, pDist)
+            print(pRA, pDec, pDist)
             print("**************************\n")
+        return planetCoords
         
+    
+    # returns tuple (azi, alt)
+    def ConvertRAandDecToAziAndAlt(self, RA, Dec):
+        pass
 
-    def InitMathEquations(self, time, planets):
+
+    def InitMathEquations(self, time, planets, lat, long, isNorth, isEast):
         self._getRelativeJulianDay(time)
+
+        self._lat = lat if isNorth else lat*-1
+        self._long = long if isEast else long*-1
+
         self._cy = self._julianDate / 36525
         self._planets = planets
         self._calcPlanets()
@@ -103,7 +116,6 @@ class MathEquations:
         if V < 0:
             V = V + (2*math.pi)
         return V
-
 
     # Checked with doc value, this eq works
     def _getExactJulianDate(self, time):

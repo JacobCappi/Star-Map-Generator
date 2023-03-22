@@ -3,13 +3,18 @@ from Star import Star
 from PIL import Image, ImageTk
 from datetime import datetime
 import csv
+import numpy as np
+import matplotlib.pyplot as plt
+from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.time import Time
+import pandas as pd
 import math
 
 class StarMap:
     def __init__(self, observer_location, date_time):
         #self.observer_location = observer_location
         #self.date_time = date_time
-        self.star_catalog = self.load_star_catalog()
+        self.stars = self.load_star_catalog()
         #self.planets = self.get_planets_location()
         #self.moon = self.get_moon_location()
         #self.messier_objects = self.get_messier_objects_location()
@@ -28,11 +33,9 @@ class StarMap:
                 if float(row[10]) <= 6:
                     allStarsfromFile.append(Star(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12], row[13]))
 
-        self.stars = allStarsfromFile
-
         print (vars(allStarsfromFile[5]))
         #print(len(allStarsfromFile))
-        return self.stars
+        return allStarsfromFile
 
     def get_planets_location(self):
         # Calculate the location of all major planets (Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune)
@@ -80,22 +83,29 @@ class StarMap:
 
 # Create a main function to run the program
 def main():
+    date_time = 'YYYY-MM-DD HH:MM'
     while True:
-        # Ask the user to enter the observer location, date and time
-        observer_location = input("Enter observer location (latitude and longitude "
-                                  "in degrees and minutes '00 00 00 D'): ")
 
-        input_variables = observer_location.split()
+        # get user input for latitude in degrees, minutes, seconds
+        lat_deg = int(input("Enter your latitude in degrees: "))
+        lat_min = int(input("Enter your latitude in minutes: "))
+        lat_sec = float(input("Enter your latitude in seconds: "))
 
-        if len(input_variables) > 4:
-            print("ERROR: More than 4 inputs (Degrees, minutes, seconds, direction) recognized in input, try again.")
-            continue
-        degrees = input_variables[0]
-        minutes = input_variables[1]
-        seconds = input_variables[2]
-        direction = input_variables[3]
+        # convert latitude to decimal degrees
+        lat = lat_deg + lat_min / 60 + lat_sec / 3600
 
-        print("degrees: " + degrees + " minutes: " + minutes + " seconds: " + seconds + " direction: " + direction)
+        # get user input for longitude in degrees, minutes, seconds
+        lon_deg = int(input("Enter your longitude in degrees: "))
+        lon_min = int(input("Enter your longitude in minutes: "))
+        lon_sec = float(input("Enter your longitude in seconds: "))
+
+        # convert longitude to decimal degrees
+        lon = lon_deg + lon_min / 60 + lon_sec / 3600
+
+        #if len(input_variables) > 4:
+            #print("ERROR: More than 4 inputs (Degrees, minutes, seconds, direction) recognized in input, try again.")
+           # continue
+        #print("degrees: " + degrees + " minutes: " + minutes + " seconds: " + seconds + " direction: " + direction)
         break
     while True:
         date_time = input("Enter date and time in the format 'YYYY-MM-DD HH:MM': ")
@@ -124,16 +134,43 @@ def main():
         break
 
     # Create an instance of the StarMap class
-    star_map = StarMap(observer_location, date_time)
+    #star_map = StarMap(observer_location, date_time)
 
     # Show the star map on screen
-    star_map.show_on_screen("starmapTest.png")
+    #star_map.show_on_screen("starmapTest.png")
 
     # Ask the user if they want to save the image to disk
     #save_image = input("Do you want to save the image to disk? (yes/no): ")
     #if save_image.lower() == 'yes':
         #filename = input("Enter filename: ")
         #star_map.save_image(filename)
+
+    # read in the star data from a CSV file
+    star_data = pd.read_csv('hyg.csv')
+
+    # create an EarthLocation object with the user's coordinates
+    user_location = EarthLocation(lat=lat, lon=lon)
+
+    # create a Time object for the current time
+    time_custom = Time(date_time, format='iso', scale='utc')
+
+    # create a SkyCoord object for each star in the star_data dataframe
+    star_coords = SkyCoord(ra=star_data['RA'], dec=star_data['Dec'], unit='deg')
+
+    # transform the star coordinates to the user's location and current time
+    aa_frame = AltAz(location=user_location, obstime=time_custom)
+    star_aa = star_coords.transform_to(aa_frame)
+
+    # filter the stars to only show those with magnitude less than or equal to 6
+    mask = star_data['Mag'] <= 6
+    visible_stars = star_data[mask]
+
+    # plot the visible stars on a scatter plot
+    plt.scatter(visible_stars['RA'], visible_stars['Dec'], s=5)
+    plt.xlabel('Right Ascension (degrees)')
+    plt.ylabel('Declination (degrees)')
+    plt.title('All Stars at {}, {}'.format(lat, lon))
+    plt.show()
 
 if __name__ == '__main__':
     main()

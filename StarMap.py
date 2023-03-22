@@ -4,6 +4,7 @@ from Planets import Planet
 from MathEquations import MathEquations
 from PIL import Image, ImageTk
 from datetime import datetime
+from datetime import timezone
 import csv
 import time
 
@@ -20,7 +21,7 @@ class StarMap:
     _isEast = False
     
     # TODO: change this to input
-    _time = datetime.now()
+    _time = datetime.now(timezone.utc)
 
     _equations = MathEquations()
 

@@ -3,6 +3,7 @@
 
 from Planets import Planet
 from datetime import datetime
+from datetime import timezone
 import math
 
 class MathEquations:
@@ -11,6 +12,7 @@ class MathEquations:
 
     _cy = 0
     _julianDate = 0
+    _MST = 0
 
     _lat = 0
     _long = 0
@@ -19,7 +21,7 @@ class MathEquations:
     
 # API
     def GetPlanetsRAandD(self):
-        planetCoords = [[]]
+        planetCoords = []
         e = None
 
         for planet in self._planets:
@@ -83,6 +85,7 @@ class MathEquations:
 
     def InitMathEquations(self, time, planets, lat, long, isNorth, isEast):
         self._getRelativeJulianDay(time)
+        self._getMST(time)
 
         self._lat = lat if isNorth else lat*-1
         self._long = long if isEast else long*-1
@@ -116,6 +119,15 @@ class MathEquations:
         if V < 0:
             V = V + (2*math.pi)
         return V
+    
+    def _getMST(self, time):
+        Y = int(time.year)
+        M = int(time.month)
+        D = int(time.day)
+        H = int(time.hour)
+        MIN = int(time.minute)
+        S = int(time.second)
+
 
     # Checked with doc value, this eq works
     def _getExactJulianDate(self, time):
@@ -127,7 +139,7 @@ class MathEquations:
             Y = Y-1
             M = M+12
         
-        if (time > datetime(year=1582, month=10, day=15)):
+        if (time > datetime(year=1582, month=10, day=15, tzinfo=timezone.utc)):
             # Python is stupid and has no types, assuming this static cast will work
             A = int(Y/100)
             B = int(2 - A + int(A/4))

@@ -20,6 +20,7 @@ class MathEquations:
     _planets = []
     
 # API
+    # list is [RA, DEC, DIST]
     def GetPlanetsRAandD(self):
         planetCoords = []
         e = None
@@ -80,7 +81,28 @@ class MathEquations:
     
     # returns tuple (azi, alt)
     def ConvertRAandDecToAziAndAlt(self, RA, Dec):
-        pass
+        angleHR = self._MST - RA
+
+        angleHR = angleHR+360 if angleHR < 0.0 else angleHR
+
+        radDec = Dec * self.__RADS
+        radLat = self._lat * self.__RADS
+        radHR = angleHR * self.__RADS
+
+        alt = math.asin((math.sin(radDec) * math.sin(radLat)) + (math.cos(radDec) * math.cos(radLat)*math.cos(radHR)))
+
+        try:
+            az = math.acos(math.sin(radDec) - math.sin(alt) * math.sin(radLat) / (math.cos(alt) *math.cos(radLat)))
+        except:
+            az = 0
+
+        alt *= self.__DEGS
+        az *= self.__DEGS
+
+        if (math.sin(radHR) > 0.0):
+            az = 360.0 - az
+
+        return (az, alt)
 
 
     def InitMathEquations(self, time, planets, lat, long, isNorth, isEast):
@@ -121,12 +143,32 @@ class MathEquations:
         return V
     
     def _getMST(self, time):
-        Y = int(time.year)
-        M = int(time.month)
-        D = int(time.day)
-        H = int(time.hour)
-        MIN = int(time.minute)
-        S = int(time.second)
+        Y = float(time.year)
+        M = float(time.month)
+        D = float(time.day)
+        H = float(time.hour)
+        MIN = float(time.minute)
+        S = float(time.second)
+
+        if M <= 2:
+            Y -= 1
+            M += 12
+        
+        a = math.floor(Y/100.0)
+        b = 2 - a + math.floor(a/4)
+        c = math.floor(365.25 * Y)
+        d = math.floor(30.6001 *(M+1))
+
+        jd = b + c + d - 730550.5 + D + (H + MIN/60 + S/3600) / 24
+        jt = jd/36525.0
+
+        mst= 280.46061837 + (360.98564736629 * jd) + (0.000387933 * jt**2) - (jt**3 / 38710000) + self._long
+        if mst > 0.0:
+            while (mst > 360.0): mst -= 360.0
+        else:
+            while (mst < 0.0): mst += 360.0
+        self._MST = mst
+
 
 
     # Checked with doc value, this eq works

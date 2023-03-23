@@ -30,10 +30,18 @@ class StarMap:
 
         self._equations.InitMathEquations(self._time, self._planets, self._lat, self._long, self._isNorth, self._isEast)
 
-        planetCoordinates = [[]]
+        planetCoordinates = []
         planetCoordinates = self._equations.GetPlanetsRAandD()
 
         print(planetCoordinates)
+
+        planetAzAlt = []
+
+        for coor in planetCoordinates:
+            (az, alt) = self._equations.ConvertRAandDecToAziAndAlt(coor[0], coor[1])
+            planetAzAlt.append([az, alt])
+        
+        print(planetAzAlt)
 
 
     # Load the star catalog data from the Yale Star Catalog

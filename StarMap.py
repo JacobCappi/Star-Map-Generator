@@ -43,6 +43,9 @@ class StarMap:
         
         print(planetAzAlt)
 
+        print(self._equations.GetLunarPhase())
+        print(self._equations.GetMoonPosition())
+
 
     # Load the star catalog data from the Yale Star Catalog
     # Return the data as a dictionary with star names as keys and locations as values

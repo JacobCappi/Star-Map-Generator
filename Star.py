@@ -105,7 +105,6 @@ class Star:
         except:
             pass
 
-
     @gliese.setter
     def gliese(self, value):
         self._gliese = value

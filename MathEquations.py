@@ -2,6 +2,7 @@
     # Planet is for planet calls
 
 from Planets import Planet
+from Moon import MoonPhases
 from datetime import datetime
 from datetime import timezone
 import math
@@ -9,6 +10,8 @@ import math
 class MathEquations:
     __RADS = float(math.pi /180.0)
     __DEGS = float(180.0 / math.pi)
+
+    _time = None
 
     _cy = 0
     _julianDate = 0
@@ -78,7 +81,6 @@ class MathEquations:
             print("**************************\n")
         return planetCoords
         
-    
     # returns tuple (azi, alt)
     def ConvertRAandDecToAziAndAlt(self, RA, Dec):
         angleHR = self._MST - RA
@@ -103,9 +105,47 @@ class MathEquations:
             az = 360.0 - az
 
         return (az, alt)
+    
+    # Math EQs must be init 
+    # PDF was just... dumb... for this part, so I used this website's formula with some adjustments to account for range
+    # https://www.subsystems.us/uploads/9/8/9/4/98948044/moonphase.pdf
+    def GetLunarPhase(self):
+        moonphase = None
+        
+        # since range is 1900 - 2100, this JD is from Jan 1 1900 : 13:52 as that was the last full moon in range
+        thatDate = datetime(year=1900, month=1, day=1, hour=13, minute=52, tzinfo=timezone.utc)
+        # that 13 minute gap is now accounted for
+        if (self._time < thatDate):
+            return MoonPhases.NEW
 
+        jdDate = self._getExactJulianDate(thatDate)
+        current = self._getExactJulianDate(self._time)
+
+        daySinceNew = current - jdDate
+        NewMoons = daySinceNew / 29.53 # days for moon cycle
+        daysIntoCycle = (NewMoons%1) *29.53
+        print(daysIntoCycle)
+
+        # This is the approximation as we don't account for lunation or exact types...
+        if (daysIntoCycle < 0.5 or daysIntoCycle > 29):
+            return MoonPhases.NEW
+        elif (daysIntoCycle < 7.5):
+            return MoonPhases.WAXINGC
+        elif (daysIntoCycle < 8.5):
+            return MoonPhases.FIRSTQ
+        elif (daysIntoCycle < 15.5):
+            return MoonPhases.WAXINGG
+        elif (daysIntoCycle < 16.5):
+            return MoonPhases.FULL
+        elif (daysIntoCycle < 22.5):
+            return MoonPhases.WANINGG
+        elif (daysIntoCycle < 23.5):
+            return MoonPhases.THIRDQ
+        elif (daysIntoCycle < 28.5):
+            return MoonPhases.WANINGC
 
     def InitMathEquations(self, time, planets, lat, long, isNorth, isEast):
+        self._time = time
         self._getRelativeJulianDay(time)
         self._getMST(time)
 
@@ -188,17 +228,17 @@ class MathEquations:
         else:
             B = 0
         
-        self._julianDate = int(365.25*Y) + int(30.6001*(M+1)) + Dd + 1720994.5 + B
-        print(self._julianDate)
-        pass
+        julianDate = int(365.25*Y) + int(30.6001*(M+1)) + Dd + 1720994.5 + B
+        print(julianDate)
+        return julianDate
 
     # The equation in the doc lists MM as both Month and Minutes.... wtf?
     # Apparently the relative for j2000 is just JD - 2451545
     # Checked with calculators, also correct
-    # J2000 number : Use this 
+    # J2000 number : Use this for celestials
     def _getRelativeJulianDay(self, time):
-        self._getExactJulianDate(time)
-        self._julianDate -= 2451545.0
+        jd = self._getExactJulianDate(time)
+        self._julianDate = jd - 2451545.0
         print(self._julianDate)
 
     def _calcPlanets(self):

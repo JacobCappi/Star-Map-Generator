@@ -1,0 +1,87 @@
+
+class MessierObjects:
+    @property
+    def MessierList(self):
+        return self._mList
+    
+    # num, ra, ra, ra, dec, dec, dec, name
+    @MessierList.setter
+    def MessierList(self, value):
+        self._mList = value
+
+    def __init__(self):
+        self._getAllMessierObjects()
+
+    def _getAllMessierObjects(self):
+        objects = []
+        objects.append([1,7,26,32,39,9,32,"N Andromeda Nebula."])
+        objects.append([2,7,27,32,38,45,34,"N Small Neb. below And Nebula."])
+        objects.append([3,20,9,17,29,32,25,"N Neb. near the N. Fish."])
+        objects.append([4,36,51,37,41,39,32,"N Cluster of St. near the Head of the Medusa."])
+        objects.append([5,53,27,4,23,22,41,"N Cluster. Pleiades."])
+        objects.append([6,78,10,12,36,11,51,"N Cluster in the Charioteer [Auriga]."])
+        objects.append([7,80,0,33,21,45,27,"N Neb. in the horn of the Bull."])
+        objects.append([8,80,11,42,34,8,6,"N Cluster in the Charioteer."])
+        objects.append([9,80,59,40,5,34,6,"S Neb. in the sword of Orion."])
+        objects.append([10,81,3,0,5,26,37,"S Small Neb. above that in the sword of Orion."])
+        objects.append([11,84,15,12,32,11,51,"N Cluster in the Charioteer."])
+        objects.append([12,88,40,9,24,33,30,"N Cluster near the foot of Castor."])
+        objects.append([13,98,58,12,20,33,0,"S Cluster near Sirius."])
+        objects.append([14,102,57,28,7,57,42,"S Cluster near the Unicorn [Monoceros]"])
+        objects.append([15,112,47,42,14,19,7,"S Cluster near the head of the Great Dog."])
+        objects.append([16,116,3,58,14,50,8,"S Cluster near the preceding."])
+        objects.append([17,120,36,0,1,16,42,"S Cluster near the tail of the Unicorn."])
+        objects.append([18,129,6,57,12,36,38,"N Cluster in Cancer."])
+        objects.append([19,166,50,54,14,16,8,"N Neb. in the Lion."])
+        objects.append([20,167,11,39,14,12,21,"N Neb. in the Lion."])
+        objects.append([21,182,45,30,59,23,50,"N Two st. [near] tail of the Great Bear."])
+        objects.append([22,184,26,58,9,16,9,"N Neb. in the Virgin."])
+        objects.append([23,186,37,23,13,2,42,"N Neb. in the Virgin."])
+        objects.append([24,186,54,33,25,30,20,"S Neb. near the Raven [Corvus]."])
+        objects.append([25,187,41,38,12,52,36,"N Neb. in the Virgin."])
+        objects.append([26,188,6,53,12,46,2,"N Neb. in the Virgin."])
+        objects.append([27,191,27,38,22,52,31,"N Neb. [in the] Hair of Berenice [Coma Berenices]."])
+        objects.append([28,196,5,30,43,12,37,"N Neb. [in the] Hunting Dogs [Canes Venatici]. Méch."])
+        objects.append([29,200,5,48,48,24,24,"N Neb. [near the] eyes of the Greyhounds [Canes Venatici]."])
+        objects.append([30,202,51,19,29,32,57,"N Neb. near the Hunting Dogs."])
+        objects.append([31,226,39,4,2,57,16,"N Neb. near Libra."])
+        objects.append([32,126,50,30,20,31,38, "N Cluster Neb. of Cancer."])
+        objects.append([33,242,16,56,25,55,40,"S Neb. near Antares."])
+        objects.append([34,248,16,56,25,55,40,"S Neb. near Antares."])
+        objects.append([35,248,43,10,1,30,28,"S Neb. in Ophiuchus."])
+        objects.append([36,251,12,6,3,42,18,"S Neb. in Ophiuchus."])
+        objects.append([37,251,48,24,29,45,30,"S Neb. in the Scorpion."])
+        objects.append([38,252,1,45,25,54,46,"S Neb. on parall. of Antares."])
+        objects.append([39,256,20,36,18,13,26,"S Neb. in Ophiuchus."])
+        objects.append([40,261,10,39,32,10,34,"S Cluster near the bow of Sagittarius."])
+        objects.append([41,261,18,29,3,5,45,"S Neb. in Ophiuchus."])
+        objects.append([42,264,30,24,34,40,34,"S Cluster. near the bow of Sagittarius."])
+        objects.append([43,265,42,50,18,45,55,"S Cluster. near the bow of Sagittarius."])
+        objects.append([44,267,4,5,22,59,10,"S Cluster near the Ecliptic."])
+        objects.append([45,267,29,30,24,21,10,"S Cluster, near the bow of Sagittarius."])
+        objects.append([46,267,31,35,22,31,25,"S Cluster near the bow of Sagittarius."])
+        objects.append([47,270,26,0,18,26,0,"S Cluster, near the bow of Sagittarius."])
+        objects.append([48,271,15,3,13,51,44,"S Cluster, near the Serpent."])
+        objects.append([49,271,34,3,17,13,14,"S Cluster."])
+        objects.append([50,271,45,48,16,14,44,"S Train of light, w/o st. [without stars]"])
+        objects.append([51,272,29,30,24,57,11,"S Neb. [in the] bow of Sagittarius."])
+        objects.append([52,274,11,46,32,31,45,"S Neb. in the Archer [Sagittarius]."])
+        objects.append([53,274,25,0,19,5,0,"S Cluster, near Sagittarius."])
+        objects.append([54,275,28,39,24,6,11,"S Neb. between the head and the bow of Sagittarius."])
+        objects.append([55,277,13,16,32,31,7,"S Neb. in the Archer [Sagittarius]."])
+        objects.append([56,278,5,25,9,38,14,"S Cluster near Antinous."])
+        objects.append([57,279,35,43,6,31,1,"S Cluster near Antinous."])
+        objects.append([58,280,12,55,30,44,1,"S Neb. in Sagittarius."])
+        objects.append([59,281,20,8,32,46,3,"N Neb. in Lyra, between Gamma and Beta."])
+        objects.append([60,182,42,5,5,42,5,"N Neb. in Virgo."])
+        objects.append([61,287,0,1,29,48,14,"N Neb. near the Swan [Cygnus]."])
+        objects.append([62,291,30,26,31,26,27,"S Neb. near Sagittarius."])
+        objects.append([63,195,30,26,19,22,44,"N Neb. in Coma Berenices."])
+        objects.append([64,297,21,41,22,4,0,"N Neb. in the Fox."])
+        objects.append([65,303,54,29,37,11,57,"N Cluster in the Swan."])
+        objects.append([66,319,40,19,10,40,3,"N Neb. near the head of Pegasus."])
+        objects.append([67,320,17,0,1,47,0,"S Neb. in the head of Aquarius."])
+        objects.append([68,320,57,10,47,25,0,"N Cluster, near the Swan."])
+        objects.append([69,321,46,18,24,19,4,"S Neb. in the tail of Capricorn."])
+        objects.append([70,348,39,27,60,22,12,"N Cluster in Cassiopeia."])
+        self.MessierList = objects

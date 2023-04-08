@@ -14,9 +14,9 @@ class Constellations:
         self._constellationList = value
 
     def __init__(self):
-        self.getAllConstellationIDs()
+        self._getAllConstellationIDs()
 
-    def getAllConstellationIDs(self):
+    def _getAllConstellationIDs(self):
         constellationList = []
 
         # Creating Andromeda constellation

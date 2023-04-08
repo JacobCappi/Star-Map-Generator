@@ -23,7 +23,7 @@ class MathEquations:
     _planets = []
     
 # API
-    # list is [RA, DEC, DIST]
+    # list is [NAME, RA, DEC, DIST]
     def GetPlanetsRAandD(self):
         planetCoords = []
         e = None
@@ -73,7 +73,7 @@ class MathEquations:
             pDec = math.atan(zEQ / math.sqrt(xEQ**2 + yEQ **2)) *self.__DEGS
             pDist = math.sqrt(xEQ**2 + yEQ**2 + zEQ**2)
 
-            planetCoords.append([pRA, pDec, pDist])
+            planetCoords.append([p.planetName, pRA, pDec, pDist])
 
             print("\n**************************")
             print(p.planetName)
@@ -274,7 +274,6 @@ class MathEquations:
             B = 0
         
         julianDate = int(365.25*Y) + int(30.6001*(M+1)) + Dd + 1720994.5 + B
-        print(julianDate)
         return julianDate
 
     # The equation in the doc lists MM as both Month and Minutes.... wtf?

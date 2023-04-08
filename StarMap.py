@@ -2,6 +2,7 @@ import tkinter as tk
 from Star import Star
 from Planets import Planet
 from MathEquations import MathEquations
+from Contellations import Constellations
 from PIL import Image, ImageTk
 from datetime import datetime
 from datetime import timezone
@@ -11,40 +12,69 @@ import time
 
 class StarMap:
 
+    # After init, list of all stars with all info in spreadsheet
     _stars = []
+
+    # After init, this has all constelations for UI. See that file for more info
+    _constellations = []
+    
+    # after init, will hold list of [planetName, Az, Alt]. That should be all that's needed in UI
     _planets = []
 
+    # based on the enum I got
+    _moonPhase = None
+
+    # az and Alt [az, alt]
+    _moonCoord = []
+
+    # --- These, set these values from UI
     _lat = 0
     _long = 0
 
     _isNorth = True
     _isEast = False
+
     
     # TODO: change this to input
     _time = datetime.now(timezone.utc)
 
+    #----
+
     _equations = MathEquations()
 
-    def __init__(self, observer_location, date_time):
+    # get time in format datetime, north and east are bools for if lat and long is E or N
+    def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc)):
+        _lat = lat
+        _long = long
+        _isNorth = isNorth
+        _isEast = isEast
+
+        _time = datetime.now(timezone.utc)
+
+
         (self._stars, self._planets) = self.load_star_catalog()
 
         self._equations.InitMathEquations(self._time, self._planets, self._lat, self._long, self._isNorth, self._isEast)
 
-        planetCoordinates = []
-        planetCoordinates = self._equations.GetPlanetsRAandD()
-
-        print(planetCoordinates)
+        self._planets = self._equations.GetPlanetsRAandD()
 
         planetAzAlt = []
 
-        for coor in planetCoordinates:
-            (az, alt) = self._equations.ConvertRAandDecToAziAndAlt(coor[0], coor[1])
-            planetAzAlt.append([az, alt])
+        for planet in self._planets:
+            (az, alt) = self._equations.ConvertRAandDecToAziAndAlt(planet[1], planet[2])
+            planetAzAlt.append([planet[0], az, alt])
         
-        print(planetAzAlt)
+        self._planets = planetAzAlt
+        print(self._planets)
 
-        print(self._equations.GetLunarPhase())
-        print(self._equations.GetMoonPosition())
+        self._moonPhase = self._equations.GetLunarPhase()
+        print(self._moonPhase)
+
+        self._moonCoord = self._equations.GetMoonPosition()
+        print(self._moonCoord)
+
+        constellations = Constellations()
+        self._constellations = constellations.getAllConstellationIDs()
 
 
     # Load the star catalog data from the Yale Star Catalog

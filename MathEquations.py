@@ -144,6 +144,51 @@ class MathEquations:
         elif (daysIntoCycle < 28.5):
             return MoonPhases.WANINGC
 
+    # another instance of the pdf being bad, but jd here is based on 1900.1.1 and I just had to ... figure it out?
+    # these are also in Lat, Long. UI might have a hard time displaying moon here w/o a good understanding of Az elv
+    # long, lat is the tuple
+    def GetMoonPosition(self):
+        # since range is 1900 - 2100, this JD is from Jan 1 1900 : 13:52 as that was the last full moon in range
+        thatDate = datetime(year=1900, month=1, day=1, tzinfo=timezone.utc)
+
+        jdDate = self._getExactJulianDate(thatDate)
+        current = self._getExactJulianDate(self._time)
+
+        T = (current - jdDate) / 36525
+        # Degree ver
+        LP = 270.434164+(481267.883*T) #Moon mean long
+        M = 358.47833 + (35999.0498*T) # Sun Mean anomaly
+        MP = 296.104608 + (477198.849*T) # Moon mean annoaly
+        D = 350.737486 + (445267.1142*T) # moon mean elong
+        F = 11.250889 + (483202.0251*T) # Mean dist from asc node
+
+
+        # Rad ver
+        RLP = self._moduloTwoPi(LP *self.__RADS)
+        RM = self._moduloTwoPi(M * self.__RADS)
+        RMP = self._moduloTwoPi(MP * self.__RADS)
+        RD = self._moduloTwoPi(D * self.__RADS)
+        RF = self._moduloTwoPi(F * self.__RADS)
+
+        e = 1 - (0.002495*T) - (0.00000752*(T**2))
+
+        la = RLP + (6.288750*math.sin(RMP)) + (1.274018*math.sin(2*RD-RMP))
+        lb = (0.658309*math.sin(2*RD)) + (0.213616*math.sin(2*RMP)) - (0.185596*math.sin(RM) * e) - (0.114336*math.sin(2*RF))
+        lc = (0.058793*math.sin(2*RD-2*RMP)) + (0.057212 * math.sin(2*RD-RM-RMP) * e) + (0.053320*math.sin(2*RD+RMP))
+        ld = (0.045874*math.sin(2*RD-RM) * e)
+
+        alpha = la + lb + lc + ld
+
+        qa = (5.128189*math.sin(RF)) + (0.280606*math.sin(RMP+RF)) + (0.277693*math.sin(RMP-RF))
+        qb = (0.173238 * math.sin(2*RD-RF)) + (0.055413*math.sin(2*RD+RF-RMP))
+        qc = (0.046272 * math.sin(2*RD - RF - RMP)) + (0.032573*math.sin(2*RD+RF)) + (0.017198*math.sin(2*RMP+RF))
+        qd = (0.009267*math.sin(2*RD+RMP-RF)) + (0.008823 * math.sin(2*RMP-RF))
+
+        beta = qa+qb+qc+qd
+
+        return self.ConvertRAandDecToAziAndAlt(alpha, beta)
+    
+
     def InitMathEquations(self, time, planets, lat, long, isNorth, isEast):
         self._time = time
         self._getRelativeJulianDay(time)

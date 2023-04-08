@@ -146,7 +146,7 @@ class MathEquations:
 
     # another instance of the pdf being bad, but jd here is based on 1900.1.1 and I just had to ... figure it out?
     # these are also in Lat, Long. UI might have a hard time displaying moon here w/o a good understanding of Az elv
-    # long, lat is the tuple
+    # same format as the other eq
     def GetMoonPosition(self):
         # since range is 1900 - 2100, this JD is from Jan 1 1900 : 13:52 as that was the last full moon in range
         thatDate = datetime(year=1900, month=1, day=1, tzinfo=timezone.utc)

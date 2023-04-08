@@ -3,6 +3,7 @@ from Star import Star
 from Planets import Planet
 from MathEquations import MathEquations
 from Contellations import Constellations
+from MessierObjects import MessierObjects
 from PIL import Image, ImageTk
 from datetime import datetime
 from datetime import timezone
@@ -11,8 +12,10 @@ import time
 
 
 class StarMap:
+    # TO map (UI) : az N:0, E:90, S:180, W:270
+    #               alt: 90 : zenith, 0 horizon
 
-    # After init, list of all stars with all info in spreadsheet
+    # After init, list of all stars [starid, starname, az, alt]
     _stars = []
 
     # After init, this has all constelations for UI. See that file for more info
@@ -26,6 +29,9 @@ class StarMap:
 
     # az and Alt [az, alt]
     _moonCoord = []
+
+    # the objects [num, name, az, alt]
+    _messierObjects = []
 
     # --- These, set these values from UI
     _lat = 0
@@ -44,15 +50,22 @@ class StarMap:
 
     # get time in format datetime, north and east are bools for if lat and long is E or N
     def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc)):
-        _lat = lat
-        _long = long
-        _isNorth = isNorth
-        _isEast = isEast
+        self._lat = lat
+        self._long = long
+        self._isNorth = isNorth
+        self._isEast = isEast
 
         _time = datetime.now(timezone.utc)
 
-
         (self._stars, self._planets) = self.load_star_catalog()
+
+        stars = []
+        for star in self._stars:
+            az, alt = self._equations.ConvertRAandDecToAziAndAlt(star.ra, star.dec)
+            stars.append([star.starId, star.properName, az, alt])
+            if (len(star.properName) > 1):
+                print(star.properName)
+        self._stars = stars
 
         self._equations.InitMathEquations(self._time, self._planets, self._lat, self._long, self._isNorth, self._isEast)
 
@@ -74,7 +87,17 @@ class StarMap:
         print(self._moonCoord)
 
         constellations = Constellations()
-        self._constellations = constellations.getAllConstellationIDs()
+        self._constellations = constellations.ConstellationsList
+
+        messier = MessierObjects()
+        messierObjects =  messier.MessierList
+        messierList = []
+
+        for num, rah, ram, ras, deh, dem, des, name in messierObjects:
+            ra, dec = self._equations.ConvertRAandDecLONGToAziAndAlt(rah, ram, ras, deh, dem, des)
+            messierList.append([num, name, ra, dec])
+        
+        self._messierObjects = messierList
 
 
     # Load the star catalog data from the Yale Star Catalog
@@ -142,7 +165,7 @@ class StarMap:
 
 # Create a main function to run the program
 def main():
-    star_map = StarMap(0, 0)
+    star_map = StarMap()
 
     
 

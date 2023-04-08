@@ -80,6 +80,12 @@ class MathEquations:
             print(pRA, pDec, pDist)
             print("**************************\n")
         return planetCoords
+
+    # if ra and dec is in H M S format
+    def ConvertRAandDecLONGToAziAndAlt(self, RAH, RAM, RAS, DED, DEM, DES):
+        ra = RAH + RAM/60 + RAS/3600
+        dec = DED + DEM/60 + DES/3600
+        return self.ConvertRAandDecToAziAndAlt(ra, dec)
         
     # returns tuple (azi, alt)
     def ConvertRAandDecToAziAndAlt(self, RA, Dec):

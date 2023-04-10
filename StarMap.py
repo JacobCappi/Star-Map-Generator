@@ -50,7 +50,7 @@ class StarMap:
     _equations = MathEquations()
 
     # get time in format datetime, north and east are bools for if lat and long is E or N
-    def __init__(self, resolution):
+    def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc), resolution = (800, 600)):
         self._lat = 0
         self._long = 0
         self._isNorth = True

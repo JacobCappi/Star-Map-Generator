@@ -13,6 +13,40 @@ import csv
 import time
 
 class StarMap:
+    # TO map (UI) : az N:0, E:90, S:180, W:270
+    #               alt: 90 : zenith, 0 horizon
+
+    # After init, list of all stars [starid, starname, az, alt]
+    _stars = []
+
+    # After init, this has all constelations for UI. See that file for more info
+    _constellations = []
+    
+    # after init, will hold list of [planetName, Az, Alt]. That should be all that's needed in UI
+    _planets = []
+
+    # based on the enum I got
+    _moonPhase = None
+
+    # az and Alt [az, alt]
+    _moonCoord = []
+
+    # the objects [num, name, az, alt]
+    _messierObjects = []
+
+    # --- These, set these values from UI
+    _lat = 0
+    _long = 0
+
+    _isNorth = True
+    _isEast = False
+
+    
+    # TODO: change this to input
+    _time = datetime.now(timezone.utc)
+
+    #----
+
     _equations = MathEquations()
 
     # get time in format datetime, north and east are bools for if lat and long is E or N

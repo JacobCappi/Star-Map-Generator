@@ -62,7 +62,7 @@ class StarMap:
         stars = []
         for star in self._stars:
             az, alt = self._equations.ConvertRAandDecToAziAndAlt(star.ra, star.dec)
-            stars.append([star.starId, star.properName, az, alt])
+            stars.append([star.starId, star.properName, az, alt, star.mag])
             if (len(star.properName) > 1):
                 print(star.properName)
         self._stars = stars
@@ -185,14 +185,21 @@ class StarMap:
         for star in self._stars:
             x = math.cos(star[3]) * math.sin(star[2])
             y = math.cos(star[3]) * math.cos(star[2])
-            x *= 1000
-            y *= 1000
-            x += self._resolution[0] / 2
-            y += self._resolution[1] / 2
-            x *= self._zoom_factor
-            y *= self._zoom_factor
-            # Create oval representing the star
-            canvas.create_oval(x, y, x + 1, y + 1, fill="white")
+            width = 15 - star[4] * 2.5
+            height = 30 - star[4] * 5
+            print(star)
+            x *= 2000
+            y *= 2000
+
+            x += 810
+            y += 540
+            
+            # After init, list of all stars [starid, starname, az, alt]
+            if (star[1]!= ' '):
+                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
+                canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+            else:
+                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
 
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))

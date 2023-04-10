@@ -180,24 +180,79 @@ hour_frame.pack(side=tk.LEFT)
 minute_frame.pack(side=tk.LEFT)
 time_frame.pack()
 
-
-
-
+#makes another window to display error messages
+def out_of_range(str):
+    window2 = tk.Tk()
+    msg = tk.Label(
+        text="Error: " + str,
+        font = ("Arial", 16),
+        fg="red",
+        master = window2
+    )
+    msg.pack()
 
 #called when button is pressed
 def button_pressed(event):
     #read values in entry boxes
     lat = 0.0
 
-    lat = lat_entry.get() #between -90 and 90
-    long = long_entry.get() #between -180 and 180
-    month = month_entry.get() #between 1 and 12
-    day = day_entry.get() #between 1 and 31
-    year = year_entry.get() #between 1900 and 2100
-    hour = hour_entry.get() #between 1 and 24
-    minute = minute_entry.get() #between 1 and 60
+    #any values that are out of range return an error message and don't call rest of program
+    lat = int(lat_entry.get())
+    if lat > 90 or lat < -90:
+        out_of_range("Latitude must be between -90 and 90")
+        return
+    
+    long = int(long_entry.get())
+    if long > 180 or long < -180:
+        out_of_range("Longitude must be between -180 and 180")
+        return
+    
+    month = int(month_entry.get())
+    if month > 12 or month < 1:
+        out_of_range("Month must be between 1 and 12")
+        return
+    
+    year = int(year_entry.get())
+    if year > 2100 or year < 1900:
+        out_of_range("Year must be between 1900 and 2100")
+        return
+    
+    day = int(day_entry.get())
+    #months with 31 days
+    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
+        if day > 31 or day < 1:
+            out_of_range("Day must be between 1 and 31")
+            return
+    #months with 30 days
+    elif month == 4 or month == 6 or month == 9 or month == 11:
+        if day > 30 or day < 1:
+            out_of_range("Day must be between 1 and 30")
+            return
+    #february
+    else:
+        if (year % 4) == 0 and year != 1900 and year != 2100: #leap year
+            if day > 29 or day < 1:
+                out_of_range("Day must be between 1 and 29")
+                return
+        else:
+            if day > 28 or day < 1: #not leap year
+                out_of_range("Day must be between 1 and 28")
+                return
+            
+    hour = int(hour_entry.get())
+    if hour > 24 or hour < 1:
+        out_of_range("Hour must be between 1 and 24")
+        return
+    
+    minute = int(minute_entry.get())
+    if minute > 60 or minute < 1:
+        out_of_range("Minute must be between 1 and 60")
+        return
+    
+    #pass values to starmap.py
+    print(1)
 
-    print(lat)
+    return
 
 #button
 button_frame = tk.Frame(master = window, borderwidth = 15)

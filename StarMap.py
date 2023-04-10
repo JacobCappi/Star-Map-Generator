@@ -7,6 +7,7 @@ from MessierObjects import MessierObjects
 from PIL import Image, ImageTk
 from datetime import datetime
 from datetime import timezone
+import math
 import csv
 import time
 
@@ -140,32 +141,32 @@ class StarMap:
         image.save(filename, 'JPEG')
         return image
 
-    def show_on_screen(self, star_map_image):
+    def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
+        # Create a canvas widget with a white background
+        canvas = tk.Canvas(window, width=400, height=400, bg="black")
+        canvas.pack()
 
-        # Open the star map image
-        image = Image.open(star_map_image)
-        image = image.resize((800, 600))
-        image = ImageTk.PhotoImage(image)
+        for star in self._stars:
+            x = math.cos(star[3])*math.sin(star[2])
+            y = math.cos(star[3])*math.cos(star[2])
+            print(x, y)
+            x *= 1000
+            y *= 1000
 
-        # Display the image in a scrollable window
-        canvas = tk.Canvas(window, width=800, height=600)
-        canvas.pack(side="left", fill="both", expand=True)
-        canvas.create_image(0, 0, anchor="nw", image=image)
-        canvas.config(scrollregion=canvas.bbox(tk.ALL))
+            x += 200
+            y += 200
 
-        # Add scrollbars to the window
-        scrollbar = tk.Scrollbar(window, orient="vertical", command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
+    # After init, list of all stars [starid, starname, az, alt]
+            canvas.create_oval(x, y, x+1, y+1, fill="white")
         # Show the window
         window.mainloop()
 
 # Create a main function to run the program
 def main():
     star_map = StarMap()
+    star_map.show_on_screen()
 
     
 

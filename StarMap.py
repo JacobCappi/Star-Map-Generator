@@ -1,8 +1,9 @@
 import tkinter as tk
+from tkinter import Canvas, Scrollbar
 from Star import Star
 from Planets import Planet
 from MathEquations import MathEquations
-from Contellations import Constellations
+from Constellations import Constellations
 from MessierObjects import MessierObjects
 from PIL import Image, ImageTk
 from datetime import datetime
@@ -10,7 +11,6 @@ from datetime import timezone
 import math
 import csv
 import time
-
 
 class StarMap:
     # TO map (UI) : az N:0, E:90, S:180, W:270
@@ -50,20 +50,19 @@ class StarMap:
     _equations = MathEquations()
 
     # get time in format datetime, north and east are bools for if lat and long is E or N
-    def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc)):
-        self._lat = lat
-        self._long = long
-        self._isNorth = isNorth
-        self._isEast = isEast
-
-        _time = datetime.now(timezone.utc)
+    def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc), resolution = (800, 600)):
+        self._lat = 0
+        self._long = 0
+        self._isNorth = True
+        self._isEast = False
+        self._time = datetime.now(timezone.utc)
 
         (self._stars, self._planets) = self.load_star_catalog()
 
         stars = []
         for star in self._stars:
             az, alt = self._equations.ConvertRAandDecToAziAndAlt(star.ra, star.dec)
-            stars.append([star.starId, star.properName, az, alt])
+            stars.append([star.starId, star.properName, az, alt, star.mag])
             if (len(star.properName) > 1):
                 print(star.properName)
         self._stars = stars
@@ -99,7 +98,14 @@ class StarMap:
             messierList.append([num, name, ra, dec])
         
         self._messierObjects = messierList
+        self._resolution = resolution
+        self._zoom_factor = min(resolution[0] / 1920, resolution[1] / 1080)
 
+    def zoom_in(self):
+        self._zoom_factor *= 1.2
+
+    def zoom_out(self):
+        self._zoom_factor /= 1.2
 
     # Load the star catalog data from the Yale Star Catalog
     # Return the data as a dictionary with star names as keys and locations as values
@@ -144,31 +150,68 @@ class StarMap:
     def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
-        # Create a canvas widget with a white background
-        canvas = tk.Canvas(window, width=400, height=400, bg="black")
-        canvas.pack()
 
+        # Create a frame to hold the canvas and scrollbars
+        frame = tk.Frame(window)
+        frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        # Create a canvas widget with a black background
+        canvas = Canvas(frame, width=self._resolution[0], height=self._resolution[1], bg="black")
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.YES)
+
+        # Create vertical and horizontal scrollbars
+        vscrollbar = Scrollbar(frame, orient=tk.VERTICAL, command=canvas.yview)
+        vscrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        hscrollbar = Scrollbar(window, orient=tk.HORIZONTAL, command=canvas.xview)
+        hscrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        canvas.configure(yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set)
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox(tk.ALL)))
+
+        def on_mousewheel(event):
+            """Zoom in/out on mouse wheel scroll."""
+            if event.delta > 0:
+                for _ in range(abs(event.delta) // 120):
+                    self.zoom_in()
+                canvas.scale(tk.ALL, event.x, event.y, self._zoom_factor, self._zoom_factor)
+            else:
+                for _ in range(abs(event.delta) // 120):
+                    self.zoom_out()
+                canvas.scale(tk.ALL, event.x, event.y, 1/self._zoom_factor, 1/self._zoom_factor)
+
+        canvas.bind("<MouseWheel>", on_mousewheel)
+
+        # Add stars to the canvas
         for star in self._stars:
-            x = math.cos(star[3])*math.sin(star[2])
-            y = math.cos(star[3])*math.cos(star[2])
-            print(x, y)
-            x *= 1000
-            y *= 1000
+            x = math.cos(star[3]) * math.sin(star[2])
+            y = math.cos(star[3]) * math.cos(star[2])
+            width = 15 - star[4] * 2.5
+            height = 30 - star[4] * 5
+            print(star)
+            x *= 2000
+            y *= 2000
 
-            x += 200
-            y += 200
+            x += 810
+            y += 540
+            
+            # After init, list of all stars [starid, starname, az, alt]
+            if (star[1]!= ' '):
+                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
+                canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+            else:
+                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
 
-    # After init, list of all stars [starid, starname, az, alt]
-            canvas.create_oval(x, y, x+1, y+1, fill="white")
+        # Configure the canvas to scroll
+        canvas.configure(scrollregion=canvas.bbox(tk.ALL))
+
         # Show the window
         window.mainloop()
 
 # Create a main function to run the program
 def main():
-    star_map = StarMap()
+    resolution = (800, 600)
+    star_map = StarMap(resolution)
     star_map.show_on_screen()
-
-    
 
 if __name__ == '__main__':
     main()

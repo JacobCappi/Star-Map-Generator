@@ -188,7 +188,7 @@ class StarMap:
             y = math.cos(star[3]) * math.cos(star[2])
             width = 15 - star[4] * 2.5
             height = 30 - star[4] * 5
-            print(star)
+            #print(star)
             x *= 2000
             y *= 2000
 
@@ -201,7 +201,26 @@ class StarMap:
                 canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
             else:
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
+        
+        for planet in self._planets:
+            x = math.cos(planet[2]) * math.sin(planet[1])
+            y = math.cos(planet[2]) * math.cos(planet[1])
+            
+            width = 15 - .5 * 2.5
+            #print(star)
+            x *= 2000
+            y *= 2000
 
+            x += 810
+            y += 540
+            canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
+            canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00")
+
+        width = 15 - .25 * 2.5
+        x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])
+        y = math.cos(self._moonCoord[1]) * math.cos(self._moonCoord[0])
+        canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
+        canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
 

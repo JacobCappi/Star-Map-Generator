@@ -50,12 +50,13 @@ class StarMap:
     _equations = MathEquations()
 
     # get time in format datetime, north and east are bools for if lat and long is E or N
-    def __init__(self, lat = 0, long = 0, isNorth = True, isEast = False, time = datetime.now(timezone.utc), resolution = (800, 600)):
-        self._lat = 0
-        self._long = 0
-        self._isNorth = True
-        self._isEast = False
-        self._time = datetime.now(timezone.utc)
+    def __init__(self, lat, long, isNorth, isEast, time, resolution):
+        self._lat = lat
+        self._long = long
+        self._isNorth = isNorth
+        self._isEast = isEast
+        self._time = time
+        self._resolution = resolution
 
         (self._stars, self._planets) = self.load_star_catalog()
 

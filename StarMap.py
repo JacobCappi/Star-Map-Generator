@@ -206,15 +206,16 @@ class StarMap:
             x = math.cos(planet[2]) * math.sin(planet[1])
             y = math.cos(planet[2]) * math.cos(planet[1])
             
-            width = 15 - .5 * 2.5
+            width = 15 - .001 * 2.5
             #print(star)
             x *= 2000
             y *= 2000
 
             x += 810
             y += 540
-            canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
-            canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00")
+            if (planet[0] != "Earth/Sun"):
+                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
+                canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00")
 
         width = 15 - .25 * 2.5
         x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])

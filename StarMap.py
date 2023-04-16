@@ -201,7 +201,35 @@ class StarMap:
                 canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
             else:
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
-        
+
+            #canvas.create_line(x, y, connected_star_x, connected_star_y)
+
+            
+            for constellation in self._constellations:
+                for star_id, connected_star_ids in constellation.stars.items():
+                    if star_id in self._stars:
+                        star_coords = self._stars[star_id]
+                        for connected_star_id in connected_star_ids:
+                            if connected_star_id in self._stars:
+                                star_coords_x = math.cos(star_coords[3]) * math.sin(star_coords[2])
+                                star_coords_y = math.cos(star_coords[3]) * math.cos(star_coords[2])
+
+                                connected_star_coords = self._stars[connected_star_id]
+                                connected_star_x = math.cos(connected_star_coords[3]) * math.sin(connected_star_coords[2])
+                                connected_star_y = math.cos(connected_star_coords[3]) * math.cos(connected_star_coords[2])
+
+                                star_coords_x *= 2000
+                                star_coords_y *= 2000
+                                star_coords_x += 810
+                                star_coords_y += 540
+
+                                connected_star_x *= 2000
+                                connected_star_y *= 2000
+                                connected_star_x += 810
+                                connected_star_y += 540
+
+                                canvas.create_line(star_coords_x, star_coords_y, connected_star_x, connected_star_y)
+
         for planet in self._planets:
             x = math.cos(planet[2]) * math.sin(planet[1])
             y = math.cos(planet[2]) * math.cos(planet[1])

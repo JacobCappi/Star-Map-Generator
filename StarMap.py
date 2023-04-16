@@ -220,6 +220,8 @@ class StarMap:
         width = 15 - .25 * 2.5
         x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])
         y = math.cos(self._moonCoord[1]) * math.cos(self._moonCoord[0])
+        x *= 2000
+        y *= 2000
         canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
         canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll

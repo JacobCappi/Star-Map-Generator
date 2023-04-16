@@ -197,16 +197,16 @@ def out_of_range(str):
 def button_pressed(event):
     #any values that are out of range return an error message and don't call rest of program
     try:
-        lat = int(lat_entry.get())
-        if lat > 90 or lat < -90:
+        lat = float(lat_entry.get())
+        if lat > 90.0 or lat < -90.0:
             out_of_range("Latitude must be between -90 and 90")
             return
     except:
         print("ERROR")
 
     try:
-        long = int(long_entry.get())
-        if long > 180 or long < -180:
+        long = float(long_entry.get())
+        if long > 180.0 or long < -180.0:
             out_of_range("Longitude must be between -180 and 180")
             return
     except:

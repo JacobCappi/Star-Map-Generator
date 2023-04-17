@@ -271,7 +271,7 @@ def button_pressed(event):
     #pass values to starmap.py
     print(1)
     resolution = (800, 600)
-    star_map = StarMap.StarMap(lat, long, True, False, datetime.datetime(year, month, day, hour, minute, tzinfo=datetime.timezone(datetime.timedelta(hours=0))), resolution)
+    star_map = StarMap.StarMap(lat, long, True, False, datetime.datetime(year, month, day, hour, minute, tzinfo=datetime.timezone.utc), resolution)
     star_map.show_on_screen()
     return
 

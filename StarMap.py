@@ -6,7 +6,7 @@ from MathEquations import MathEquations
 from Constellations import Constellations
 from MessierObjects import MessierObjects
 from PIL import Image, ImageTk
-from datetime import datetime
+import datetime
 from datetime import timezone
 import math
 import csv
@@ -43,7 +43,7 @@ class StarMap:
 
     
     # TODO: change this to input
-    _time = datetime.now(timezone.utc)
+    #_time = datetime.now(timezone.utc)
 
     #----
 
@@ -100,13 +100,6 @@ class StarMap:
         
         self._messierObjects = messierList
         self._resolution = resolution
-        self._zoom_factor = min(resolution[0] / 1920, resolution[1] / 1080)
-
-    def zoom_in(self):
-        self._zoom_factor *= 1.2
-
-    def zoom_out(self):
-        self._zoom_factor /= 1.2
 
     # Load the star catalog data from the Yale Star Catalog
     # Return the data as a dictionary with star names as keys and locations as values
@@ -147,7 +140,7 @@ class StarMap:
         # ...
         image.save(filename, 'JPEG')
         return image
-
+    
     def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
@@ -166,26 +159,19 @@ class StarMap:
         hscrollbar = Scrollbar(window, orient=tk.HORIZONTAL, command=canvas.xview)
         hscrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
-        canvas.configure(yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set)
+        def on_canvas_click(event):
+            print("Clicked at x =", event.x, "y =", event.y)
+        
         canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox(tk.ALL)))
+        # Bind the left mouse button click event to the canvas
+        canvas.bind("<Button-1>", on_canvas_click)
 
-        def on_mousewheel(event):
-            """Zoom in/out on mouse wheel scroll."""
-            if event.delta > 0:
-                for _ in range(abs(event.delta) // 120):
-                    self.zoom_in()
-                canvas.scale(tk.ALL, event.x, event.y, self._zoom_factor, self._zoom_factor)
-            else:
-                for _ in range(abs(event.delta) // 120):
-                    self.zoom_out()
-                canvas.scale(tk.ALL, event.x, event.y, 1/self._zoom_factor, 1/self._zoom_factor)
-
-        canvas.bind("<MouseWheel>", on_mousewheel)
-
+        starsToStarID = {}
         # Add stars to the canvas
         for star in self._stars:
             x = math.cos(star[3]) * math.sin(star[2])
             y = math.cos(star[3]) * math.cos(star[2])
+
             width = 15 - star[4] * 2.5
             height = 30 - star[4] * 5
             #print(star)
@@ -194,7 +180,9 @@ class StarMap:
 
             x += 810
             y += 540
-            
+
+            starsToStarID[star[0]] = [x, y]
+
             # After init, list of all stars [starid, starname, az, alt]
             if (star[1]!= ' '):
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
@@ -202,33 +190,16 @@ class StarMap:
             else:
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
 
-            #canvas.create_line(x, y, connected_star_x, connected_star_y)
+        #Constellation connection algorithm
+        for constellation in self._constellations:
+            for key in constellation.stars:
+                for id in constellation.stars[key]:
+                    print (key, id)
+                    try:
+                        canvas.create_line(starsToStarID[key][0], starsToStarID[key][1], starsToStarID[id][0], starsToStarID[id][1], fill="white")
+                    except:
+                        pass
 
-            
-            for constellation in self._constellations:
-                for star_id, connected_star_ids in constellation.stars.items():
-                    if star_id in self._stars:
-                        star_coords = self._stars[star_id]
-                        for connected_star_id in connected_star_ids:
-                            if connected_star_id in self._stars:
-                                star_coords_x = math.cos(star_coords[3]) * math.sin(star_coords[2])
-                                star_coords_y = math.cos(star_coords[3]) * math.cos(star_coords[2])
-
-                                connected_star_coords = self._stars[connected_star_id]
-                                connected_star_x = math.cos(connected_star_coords[3]) * math.sin(connected_star_coords[2])
-                                connected_star_y = math.cos(connected_star_coords[3]) * math.cos(connected_star_coords[2])
-
-                                star_coords_x *= 2000
-                                star_coords_y *= 2000
-                                star_coords_x += 810
-                                star_coords_y += 540
-
-                                connected_star_x *= 2000
-                                connected_star_y *= 2000
-                                connected_star_x += 810
-                                connected_star_y += 540
-
-                                canvas.create_line(star_coords_x, star_coords_y, connected_star_x, connected_star_y)
 
         for planet in self._planets:
             x = math.cos(planet[2]) * math.sin(planet[1])
@@ -255,13 +226,19 @@ class StarMap:
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
 
+        rad = float(math.pi/180)
+        x,y = 150.5 * rad, 32.7 * rad
+        x *= 2000
+        y *= 2000
+        #canvas.create_text(x,y+(width/2)+5, text="Alpheratz", fill="red")
+
         # Show the window
         window.mainloop()
 
 # Create a main function to run the program
 def main():
     resolution = (800, 600)
-    star_map = StarMap(resolution)
+    star_map = StarMap(1, 1, True, False, datetime.datetime(2000, 1, 1, 4, 15, tzinfo=datetime.timezone.utc), resolution)
     star_map.show_on_screen()
 
 if __name__ == '__main__':

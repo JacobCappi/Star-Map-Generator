@@ -5,7 +5,7 @@ from Planets import Planet
 from MathEquations import MathEquations
 from Constellations import Constellations
 from MessierObjects import MessierObjects
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageGrab
 from datetime import datetime
 from datetime import timezone
 import math
@@ -101,7 +101,7 @@ class StarMap:
         self._messierObjects = messierList
         self._resolution = resolution
         self._zoom_factor = min(resolution[0] / 1920, resolution[1] / 1080)
-
+        
     def zoom_in(self):
         self._zoom_factor *= 1.2
 
@@ -142,16 +142,36 @@ class StarMap:
     def printStars(self):
         print(self._stars)
 
-    def save_image(self, image, filename):
-        # Generate the star map image and save it to disk in the JPEG format
-        # ...
-        image.save(filename, 'JPEG')
-        return image
+    def save_image(self, canvas, filename):
+        print("saving")
+        canvas.scale(tk.ALL, 0, 0, 1/1, 1/1)
+        ImageGrab.grab(bbox=(
+            canvas.winfo_rootx(),
+            canvas.winfo_rooty(),
+            canvas.winfo_rootx() + canvas.winfo_width(),
+            canvas.winfo_rooty() + canvas.winfo_height()
+        )).save(filename) 
+
+    def showhide_names(self, canvas, names):
+        for name in names:
+            state = canvas.itemcget(name, 'state')
+            print(state)
+            if canvas.itemcget(name, 'state') == 'hidden':            
+                canvas.itemconfig(name, state= 'normal')
+            elif canvas.itemcget(name, 'state') == '' or canvas.itemcget(name, 'state') == 'normal':
+                canvas.itemconfig(name, state= 'hidden')
+    
+        canvas.update()
+
 
     def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
-
+        star_names = []
+        planet_names = []
+                
+        
+        
         # Create a frame to hold the canvas and scrollbars
         frame = tk.Frame(window)
         frame.pack(fill=tk.BOTH, expand=tk.YES)
@@ -198,7 +218,8 @@ class StarMap:
             # After init, list of all stars [starid, starname, az, alt]
             if (star[1]!= ' '):
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
-                canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+                text = canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+                star_names.append(text)
             else:
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
         
@@ -215,7 +236,7 @@ class StarMap:
             y += 540
             if (planet[0] != "Earth/Sun"):
                 canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
-                canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00")
+                planet_names.append(canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00"))
 
         width = 15 - .25 * 2.5
         x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])
@@ -226,7 +247,29 @@ class StarMap:
         canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
+        
 
+
+        # Add a button to the top of the window for saving images
+        button = tk.Button(window, text="Save as Jpeg", command = lambda: self.save_image(canvas, "StarMap.jpg"))
+        button.place(relx=0, rely=0, anchor="nw")
+        
+        # Add a button to the top of the window for show/hiding star names
+        button1 = tk.Button(window, text="show/hide star names", command = lambda: self.showhide_names(canvas, star_names))
+        button1.place(relx=0.1, rely=0, anchor="nw")
+        
+        # Add a button to the top of the window for show/hiding planet names
+        button2 = tk.Button(window, text="show/hide planet names", command = lambda: self.showhide_names(canvas, planet_names))
+        button2.place(relx=0.3, rely=0, anchor="nw")
+
+        # Add a button to the top of the window for show/hiding constellation names
+        button3 = tk.Button(window, text="show/hide constellation names", command = lambda: self.showhide_names(canvas, planet_names)) #needs to be constellation names
+        button3.place(relx=0.5, rely=0, anchor="nw")
+
+
+        window.attributes('-fullscreen', True)
+        window.attributes('-fullscreen', False)
+        window.attributes('-topmost', True)
         # Show the window
         window.mainloop()
 
@@ -238,3 +281,25 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+    """
+    
+    # define the button dimensions and position
+        button_width = 100
+        button_height = 50
+        button_x = 200
+        button_y = 200
+
+    # create the button rectangle
+        button_rect = canvas.create_rectangle(button_x, button_y, button_x + button_width, button_y + button_height, fill="blue")
+        # create the button text
+        button_text = canvas.create_text(button_x + button_width/2, button_y + button_height/2, text="Save Image", fill="white")
+        def button_click():
+            print("Button clicked!")
+            self.save_image( canvas, "starmap.jpeg")
+        
+        # bind the button click event to the button_click function
+        canvas.tag_bind(button_rect, "<Button-1>", lambda event: button_click())
+    
+    """

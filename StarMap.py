@@ -10,7 +10,8 @@ import datetime
 from datetime import timezone
 import math
 import csv
-import time
+import tkinter.filedialog as fd
+from PIL import ImageGrab
 
 class StarMap:
     # TO map (UI) : az N:0, E:90, S:180, W:270
@@ -147,20 +148,48 @@ class StarMap:
     def printStars(self):
         print(self._stars)
 
-
-    def save_image(self, image, filename):
-        # Generate the star map image and save it to disk in the JPEG format
-        # ...
-        image.save(filename, 'JPEG')
-        return image
-
     def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
 
+        # Create a frame for the checkbox and label
+        panel = tk.Frame(window)
+        panel.pack(side=tk.LEFT, fill=tk.Y, pady=5)
+
+        # Create a label to display "Show Labels" or "Hide Labels"
+        label = tk.Label(panel, text="Show Labels")
+        label.pack(side=tk.TOP, pady=5)
+
+        # Create a BooleanVar object to hold the checkbox value
+        show_labels = tk.BooleanVar()
+        show_labels.set(True)  # set default value to True
+
+        # Create a Checkbutton widget
+        checkbutton = tk.Checkbutton(panel, variable=show_labels, text="")
+        checkbutton.pack(side=tk.TOP)
+
         # Create a frame to hold the canvas and scrollbars
         frame = tk.Frame(window)
         frame.pack(fill=tk.BOTH, expand=tk.YES)
+
+        # Create a function to generate the JPEG image
+        def generate_jpeg():
+            # get the coordinates of the window
+            x = frame.winfo_rootx()
+            y = frame.winfo_rooty()
+            width = frame.winfo_width()
+            height = frame.winfo_height()
+
+            image = ImageGrab.grab((x, y, x+width, y+height))
+
+            # Open a file dialog to save the JPEG image
+            filename = fd.asksaveasfilename(defaultextension=".jpg")
+            
+            # Save the image as a JPEG file
+            image.save(filename)
+
+        button = tk.Button(panel, text="Generate JPEG", command=generate_jpeg)
+        button.pack(pady=10)
 
         # Create a canvas widget with a black background
         canvas = Canvas(frame, width=self._resolution[0], height=self._resolution[1], bg="black")
@@ -171,6 +200,16 @@ class StarMap:
         vscrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         hscrollbar = Scrollbar(window, orient=tk.HORIZONTAL, command=canvas.xview)
         hscrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # Define a function to show or hide the labels
+        def toggle_labels(*args):
+            state = "normal" if show_labels.get() else "hidden"
+            for item in canvas.find_all():
+                if canvas.type(item) == "text":
+                    canvas.itemconfigure(item, state=state)
+
+        # Bind the function to the BooleanVar object
+        show_labels.trace_add("write", toggle_labels)
 
         def on_canvas_click(event):
             print("Clicked at x =", event.x, "y =", event.y)
@@ -258,13 +297,14 @@ class StarMap:
         x *= 2000
         y *= 2000
         #canvas.create_text(x,y+(width/2)+5, text="Alpheratz", fill="red")
-
+        
+        canvas.scale(tk.ALL, self._resolution[0] / 2, self._resolution[1] / 2.25, self._resolution[1] / 4500, self._resolution[1] / 4500)
         # Show the window
         window.mainloop()
 
 # Create a main function to run the program
 def main():
-    resolution = (800, 600)
+    resolution = (1024, 768)
     star_map = StarMap(1, 1, True, False, datetime.datetime(2000, 6, 15, 15, 15, tzinfo=datetime.timezone.utc), resolution)
     star_map.show_on_screen()
 

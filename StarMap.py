@@ -36,7 +36,7 @@ class StarMap:
 
     # --- These, set these values from UI
     _lat = 0
-    _long = 0
+    _longt = 0
 
     _isNorth = True
     _isEast = False
@@ -50,9 +50,9 @@ class StarMap:
     _equations = MathEquations()
 
     # get time in format datetime, north and east are bools for if lat and long is E or N
-    def __init__(self, lat, long, isNorth, isEast, time, resolution):
+    def __init__(self, lat, longt, isNorth, isEast, time, resolution):
         self._lat = lat
-        self._long = long
+        self._longt = longt
         self._isNorth = isNorth
         self._isEast = isEast
         self._time = time
@@ -62,13 +62,17 @@ class StarMap:
 
         stars = []
         for star in self._stars:
-            az, alt = self._equations.ConvertRAandDecToAziAndAlt(star.ra, star.dec)
-            stars.append([star.starId, star.properName, az, alt, star.mag])
-            if (len(star.properName) > 1):
-                print(star.properName)
+            if (((star.ra *7.5)-90) > lat - 45) and (((star.ra * 7.5) - 90) < lat + 45 ) and (star.dec < longt + 45) and (star.dec > longt - 45):
+#               ^^^ generates field of view by converting RA to +/- 90 degrees and defining a 90 degree viewing range in both RA and Dec
+#                   based on the viewer's position
+                az, alt = self._equations.ConvertRAandDecToAziAndAlt(star.ra, star.dec)
+                stars.append([star.starId, star.properName, az, alt, star.mag])
+                if (len(star.properName) > 1):
+                    print(star.properName)
+            
         self._stars = stars
 
-        self._equations.InitMathEquations(self._time, self._planets, self._lat, self._long, self._isNorth, self._isEast)
+        self._equations.InitMathEquations(self._time, self._planets, self._lat, self._longt, self._isNorth, self._isEast)
 
         self._planets = self._equations.GetPlanetsRAandD()
 
@@ -100,6 +104,14 @@ class StarMap:
         
         self._messierObjects = messierList
         self._resolution = resolution
+        self._zoom_factor = min(resolution[0] / 1920, resolution[1] / 1080)
+
+
+    def zoom_in(self):
+        self._zoom_factor * 1.2
+
+    def zoom_out(self):
+        self._zoom_factor / 1.2
 
     # Load the star catalog data from the Yale Star Catalog
     # Return the data as a dictionary with star names as keys and locations as values
@@ -135,12 +147,13 @@ class StarMap:
     def printStars(self):
         print(self._stars)
 
+
     def save_image(self, image, filename):
         # Generate the star map image and save it to disk in the JPEG format
         # ...
         image.save(filename, 'JPEG')
         return image
-    
+
     def show_on_screen(self):
         window = tk.Tk()
         window.title("Star Map")
@@ -161,6 +174,19 @@ class StarMap:
 
         def on_canvas_click(event):
             print("Clicked at x =", event.x, "y =", event.y)
+
+        def on_mousewheel(event):
+            """Zoom in/out on mouse wheel scroll."""
+            if event.delta <= 0:
+                for _ in range(abs(event.delta) // 120):
+                    self.zoom_in()
+                canvas.scale(tk.ALL, event.x, event.y, self._zoom_factor, self._zoom_factor)          
+            else:
+                for _ in range(abs(event.delta) // 120):
+                    self.zoom_out()
+                canvas.scale(tk.ALL, event.x, event.y, 1/self._zoom_factor, 1/self._zoom_factor)
+
+        canvas.bind("<MouseWheel>", on_mousewheel)         
         
         canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox(tk.ALL)))
         # Bind the left mouse button click event to the canvas
@@ -174,7 +200,7 @@ class StarMap:
 
             width = 15 - star[4] * 2.5
             height = 30 - star[4] * 5
-            #print(star)
+            print(star)
             x *= 2000
             y *= 2000
 
@@ -183,12 +209,13 @@ class StarMap:
 
             starsToStarID[star[0]] = [x, y]
 
-            # After init, list of all stars [starid, starname, az, alt]
-            if (star[1]!= ' '):
-                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
-                canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
-            else:
-                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
+            if ((star[3] > 0) and (star[3]<90)):
+                # After init, list of all stars [starid, starname, az, alt]
+                if (star[1]!= ' '):
+                    canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
+                    canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+                else:
+                    canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
 
         #Constellation connection algorithm
         for constellation in self._constellations:
@@ -222,7 +249,7 @@ class StarMap:
         x *= 2000
         y *= 2000
         canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
-        canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
+        canvas.create_text(x,y+(width/2)+5, text="Moon", fill="red")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
 
@@ -238,7 +265,7 @@ class StarMap:
 # Create a main function to run the program
 def main():
     resolution = (800, 600)
-    star_map = StarMap(1, 1, True, False, datetime.datetime(2000, 1, 1, 4, 15, tzinfo=datetime.timezone.utc), resolution)
+    star_map = StarMap(1, 1, True, False, datetime.datetime(2000, 6, 15, 15, 15, tzinfo=datetime.timezone.utc), resolution)
     star_map.show_on_screen()
 
 if __name__ == '__main__':

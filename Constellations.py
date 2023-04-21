@@ -103,7 +103,7 @@ class Constellations:
                 tk_image = photo_images[path]
             else:
                 image = Image.open(path)
-                rImage = image.resize((150, 150))
+                rImage = image.resize((250, 250))
                 
                 tk_image = ImageTk.PhotoImage(rImage)
                 photo_images[path] = tk_image

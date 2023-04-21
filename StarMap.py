@@ -168,11 +168,12 @@ class StarMap:
 
 
     def show_on_screen(self):
-        window = self._tk
-        #window = tk.Toplevel()
+        #window = self._tk
+        window = tk.Toplevel()
         window.title("Star Map")
         star_names = []
         planet_names = []
+        con_names = []
                 
         
         
@@ -192,9 +193,9 @@ class StarMap:
 
         canvas.configure(yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set)
         canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox(tk.ALL)))
-
+        """
         def on_mousewheel(event):
-            """Zoom in/out on mouse wheel scroll."""
+            ""Zoom in/out on mouse wheel scroll.""
             if event.delta > 0:
                 for _ in range(abs(event.delta) // 120):
                     self.zoom_in()
@@ -205,7 +206,7 @@ class StarMap:
                 canvas.scale(tk.ALL, event.x, event.y, 1/self._zoom_factor, 1/self._zoom_factor)
 
         canvas.bind("<MouseWheel>", on_mousewheel)
-
+        """
          
         starsToStarID = {}
 
@@ -217,8 +218,8 @@ class StarMap:
                 width = 15 - star[4] * 2.5
                 height = 30 - star[4] * 5
                 #print(star)
-                x *= 4000
-                y *= 4000
+                x *= 2000
+                y *= 2000
 
                 x += 810
                 y += 540
@@ -240,9 +241,10 @@ class StarMap:
                 img = constellation.image
 
                 print (x, y, img)
-                canvas.create_image(x, y, image= img, anchor='center')
                 print(constellation.name)
-                #canvas.create_text(x, y, constellation.name, fill="#FFFFFF")
+                canvas.create_image(x, y, image= img, anchor='center')
+                text = canvas.create_text(x, y, text=constellation.name, fill="#FFFFFF")
+                con_names.append(text)
 
         for planet in self._planets:
             x = math.cos(planet[2]) * math.sin(planet[1])
@@ -250,8 +252,8 @@ class StarMap:
             if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
                 width = 35 - .001 * 2.5
                 #print(star)
-                x *= 4000
-                y *= 4000
+                x *= 2000
+                y *= 2000
 
                 x += 810
                 y += 540
@@ -263,8 +265,10 @@ class StarMap:
         x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])
         y = math.cos(self._moonCoord[1]) * math.cos(self._moonCoord[0])
         if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
-            x *= 4000
-            y *= 4000
+            x *= 2000
+            y *= 2000
+            x += 810
+            y += 540
             canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
             canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
@@ -283,7 +287,7 @@ class StarMap:
         button2.place(relx=0.3, rely=0, anchor="nw")
 
         # Add a button to the top of the window for show/hiding constellation names
-        button3 = tk.Button(window, text="show/hide constellation names", command = lambda: self.showhide_names(canvas, planet_names)) #needs to be constellation names
+        button3 = tk.Button(window, text="show/hide constellation names", command = lambda: self.showhide_names(canvas, con_names)) #needs to be constellation names
         button3.place(relx=0.5, rely=0, anchor="nw")
 
 

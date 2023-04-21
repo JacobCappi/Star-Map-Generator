@@ -79,13 +79,13 @@ class StarMap:
             planetAzAlt.append([planet[0], az, alt])
         
         self._planets = planetAzAlt
-        print(self._planets)
+        #print(self._planets)
 
         self._moonPhase = self._equations.GetLunarPhase()
-        print(self._moonPhase)
+        #print(self._moonPhase)
 
         self._moonCoord = self._equations.GetMoonPosition()
-        print(self._moonCoord)
+        #print(self._moonCoord)
 
         constellations = Constellations()
         self._constellations = constellations.ConstellationsList
@@ -103,10 +103,10 @@ class StarMap:
         self._zoom_factor = min(resolution[0] / 1920, resolution[1] / 1080)
         
     def zoom_in(self):
-        self._zoom_factor *= 1.2
+        self._zoom_factor * 1.2
 
     def zoom_out(self):
-        self._zoom_factor /= 1.2
+        self._zoom_factor / 1.2
 
     # Load the star catalog data from the Yale Star Catalog
     # Return the data as a dictionary with star names as keys and locations as values
@@ -202,49 +202,66 @@ class StarMap:
 
         canvas.bind("<MouseWheel>", on_mousewheel)
 
+         
+        starsToStarID = {}
+
         # Add stars to the canvas
         for star in self._stars:
             x = math.cos(star[3]) * math.sin(star[2])
             y = math.cos(star[3]) * math.cos(star[2])
-            width = 15 - star[4] * 2.5
-            height = 30 - star[4] * 5
-            #print(star)
-            x *= 2000
-            y *= 2000
+            if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
+                
+                width = 15 - star[4] * 2.5
+                height = 30 - star[4] * 5
+                #print(star)
+                x *= 4000
+                y *= 4000
 
-            x += 810
-            y += 540
+                x += 810
+                y += 540
+                starsToStarID[star[0]] = (x, y)
+                # After init, list of all stars [starid, starname, az, alt]
+
+                if (star[1]!= ' '):
+                    canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
+                    text = canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
+                    star_names.append(text)
+                else:
+                    canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
+                    
             
-            # After init, list of all stars [starid, starname, az, alt]
-            if (star[1]!= ' '):
-                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#ADD8E6")
-                text = canvas.create_text(x,y+(width/2)+5, text=star[1], fill="#ADD8E6")
-                star_names.append(text)
-            else:
-                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
+        
+        
+        for constellation in self._constellations:
+            print(constellation)
+            if constellation.star in starsToStarID:
+                x,y = starsToStarID[constellation.star]
+                img = constellation.image
+                canvas.create_image(x, y, image= img, anchor = 'nw')
         
         for planet in self._planets:
             x = math.cos(planet[2]) * math.sin(planet[1])
             y = math.cos(planet[2]) * math.cos(planet[1])
-            
-            width = 15 - .001 * 2.5
-            #print(star)
-            x *= 2000
-            y *= 2000
+            if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
+                width = 35 - .001 * 2.5
+                #print(star)
+                x *= 4000
+                y *= 4000
 
-            x += 810
-            y += 540
-            if (planet[0] != "Earth/Sun"):
-                canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
-                planet_names.append(canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00"))
+                x += 810
+                y += 540
+                if (planet[0] != "Earth/Sun"):
+                    canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#FFFF00")
+                    planet_names.append(canvas.create_text(x,y+(width/2)+5, text=planet[0], fill="#FFFF00"))
 
         width = 15 - .25 * 2.5
         x = math.cos(self._moonCoord[1]) * math.sin(self._moonCoord[0])
         y = math.cos(self._moonCoord[1]) * math.cos(self._moonCoord[0])
-        x *= 2000
-        y *= 2000
-        canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
-        canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
+        if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
+            x *= 4000
+            y *= 4000
+            canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
+            canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
         

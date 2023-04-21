@@ -23,152 +23,93 @@ class Constellations:
     def _getAllConstellations(self):
         constellationList = []
 
-        
+        image_paths = {
+            "Andromeda" : 'constellations/andromeda.png',
+            "Aquarius" : 'constellations/aquarius.png',
+            "Aries" : 'constellations/aries.png',
+            "Taurus": 'constellations/taurus.png',
+            "Gemini": 'constellations/gemini.png',
+            "Pisces": 'constellations/pisces.png',
+            "Capricornus":'constellations/capricornus.png',
+            "Sagittarius":'constellations/sagittarius.png',
+            "Scorpio":'constellations/scorpio.png',
+            "Libra":'constellations/libra.png',
+            "Virgo":'constellations/virgo.png',
+            "Leo":'constellations/leo.png',
+            "Cancer":'constellations/cancer.png',
+            "Cygnus":'constellations/cygnus.png',
+            "Auriga":'constellations/auriga.png',
+            "Bootes":'constellations/bootes.png',
+            "Centaurus":'constellations/centaurus.png',
+            "Orion":'constellations/orion.png',
+            "Hercules":'constellations/hercules.png',
+            "Aquila":'constellations/aquila.png',
+            "CanisMaj":'constellations/canisMaj.png',
+            "CanisMin":'constellations/canisMin.png',
+            "Crux":'constellations/crux.png',
+            "Hydra":'constellations/hydra.png',
+            "Lyra":'constellations/lyra.png',
+            "Pegasus":'constellations/pegasus.png',
+            "Perseus":'constellations/perseus.png',
+            "Cassiopeia":'constellations/casiopea.png',
+            "Cepheus":'constellations/cepheus.png',
+            "Draco":'constellations/draco.png',
+            "UrsaMaj":'constellations/ursaMaj.png',
+            "UrsaMin":'constellations/ursaMin.png'
+        }
 
+        image_stars= {
+            "Perseus": 50098,
+            "Pegasus": 79533,
+            "Lyra": 65795,
+            "Hydra": 50094,
+            "Crux": 45767,
+            "CanisMin": 27267,
+            "CanisMaj": 26214,
+            "Aquila": 67320,
+            "Hercules": 57888,
+            "Orion": 17947,
+            "Cygnus": 74084,
+            "Centaurus": 51926,
+            "Bootes": 49140,
+            "Auriga": 18021,
+            "Cassiopeia": 544,
+            "Cepheus": 76423,
+            "Draco": 41542,
+            "UrsaMaj": 49038,
+            "UrsaMin": 8222,
+            "Pisces": 3909,
+            "Capricornus": 72769,
+            "Sagittarius": 67811,
+            "Scorpio": 61677,
+            "Libra": 53308,
+            "Virgo": 52290,
+            "Leo": 35524,
+            "Cancer": 31816,
+            "Gemini": 27698,
+            "Taurus": 18796,
+            "Aries": 9257,
+            "Aquarius": 74474,
+            "Andromeda": 2183
+        }
 
+        photo_images = {}
 
+        # Load each image and create a PhotoImage instance for it
+        for key, value in image_paths.items():
+            path = value
 
-        # Creating Andromeda constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/andromeda.png'))
-        
-        andromeda = Constellation("Andromeda", 2183, image)
-        constellationList.append(andromeda)
-        
-        # Creating Aquarius constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/aquarius.png'))
-        print(image)
-        aquarius = Constellation("Aquarius", 74474, image)
-        constellationList.append(aquarius)
+            if path in photo_images:
+                tk_image = photo_images[path]
+            else:
+                image = Image.open(path)
+                rImage = image.resize((150, 150))
+                
+                tk_image = ImageTk.PhotoImage(rImage)
+                photo_images[path] = tk_image
 
-        # Creating Aries constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/aries.png'))
-        aries = Constellation("Aries", 9257, image)
-        constellationList.append(aries)
-
-        # Creating Taurus constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/taurus.png'))
-        taurus = Constellation("Taurus", 18796, image)
-        constellationList.append(taurus)
-
-        # Creating Gemini constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/gemini.png'))
-        gemini = Constellation("Gemini", 27698, image)
-        constellationList.append(gemini)
-
-        # Creating Cancer constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/cancer.png'))
-        cancer = Constellation("Cancer", 31816, image)
-        constellationList.append(cancer)
-
-        # Creating Leo constellation
-        image = ImageTk.PhotoImage(Image.open('constellations/leo.png'))
-        leo = Constellation("Leo", 35524, image)
-        constellationList.append(leo)
-
-        
-        image = ImageTk.PhotoImage(Image.open('constellations/virgo.png'))
-        Virgo = Constellation("Virgo", 52290, image)
-        constellationList.append(Virgo)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/libra.png'))
-        Libra = Constellation("Libra", 53308, image)
-        constellationList.append(Libra)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/scorpio.png'))
-        Scorpio = Constellation("Scorpio", 61677, image)
-        constellationList.append(Scorpio)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/sagittarius.png'))
-        Sagittarius = Constellation("Sagittarius", 67811, image)
-        constellationList.append(Sagittarius)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/capricornus.png'))
-        Capricornus = Constellation("Capricornus", 72769, image)
-        constellationList.append(Capricornus)
-
-
-        image = ImageTk.PhotoImage(Image.open('constellations/pisces.png'))
-        Pisces = Constellation("Pisces", 3909, image)
-        constellationList.append(Pisces)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/ursaMin.png'))
-        UrsaMinor = Constellation("Ursa Minor", 8222, image)
-        constellationList.append(UrsaMinor)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/ursaMaj.png'))
-        UrsaMajor = Constellation("Ursa Major", 49038, image)
-        constellationList.append(UrsaMajor)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/draco.png'))
-        Draco = Constellation("Draco", 41542, image)
-        constellationList.append(Draco)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/cepheus.png'))
-        Cepheus = Constellation("Cepheus", 76423, image)
-        constellationList.append(Cepheus)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/casiopea.png'))
-        Cassiopeia = Constellation("Cassiopeia", 544, image)
-        constellationList.append(Cassiopeia)
-
-
-        image = ImageTk.PhotoImage(Image.open('constellations/auriga.png'))
-        Auriga = Constellation("Auriga", 18021, image)
-        constellationList.append(Auriga)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/bootes.png'))
-        Bootes = Constellation("Bootes", 49140, image)
-        constellationList.append(Bootes)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/centaurus.png'))
-        Centaurus = Constellation("Centaurus", 51926, image)
-        constellationList.append(Centaurus)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/cygnus.png'))
-        Cygnus = Constellation("Cygnus", 74084, image)
-        constellationList.append(Cygnus)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/orion.png'))
-        Orion = Constellation("Orion", 17947, image)
-        constellationList.append(Orion)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/hercules.png'))
-        Hercules = Constellation("Hercules", 57888, image)
-        constellationList.append(Hercules)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/aquila.png'))
-        Aquila = Constellation("Aquila", 67320, image)
-        constellationList.append(Aquila)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/canisMaj.png'))
-        CanisMajor = Constellation("Canis Major", 26214, image)
-        constellationList.append(CanisMajor)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/canisMin.png'))
-        CanisMinor = Constellation("Canis Minor", 27267, image)
-        constellationList.append(CanisMinor)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/crux.png'))
-        Crux = Constellation("Crux", 45767, image)
-        constellationList.append(Crux)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/hydra.png'))
-        Hydra = Constellation("Hydra", 50094, image)
-        constellationList.append(Hydra)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/lyra.png'))
-        Lyra = Constellation("Lyra", 65795, image)
-        constellationList.append(Lyra)
-
-
-
-        image = ImageTk.PhotoImage(Image.open('constellations/pegasus.png'))
-        Pegasus = Constellation("Pegasus", 79533, image)
-        constellationList.append(Pegasus)
-
-        image = ImageTk.PhotoImage(Image.open('constellations/perseus.png'))
-        Perseus = Constellation("Perseus", 50098, image)
-        constellationList.append(Perseus)
+            constellation = Constellation(key, image_stars[key], tk_image)
+            constellationList.append(constellation)
 
         # Return the list of constellations
         self.ConstellationsList = constellationList

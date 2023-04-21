@@ -34,6 +34,8 @@ class StarMap:
     # the objects [num, name, az, alt]
     _messierObjects = []
 
+    _tk = None
+
     # --- These, set these values from UI
     _lat = 0
     _long = 0
@@ -57,6 +59,7 @@ class StarMap:
         self._isEast = isEast
         self._time = time
         self._resolution = resolution
+        self._tk = tk.Tk()
 
         (self._stars, self._planets) = self.load_star_catalog()
 
@@ -165,7 +168,8 @@ class StarMap:
 
 
     def show_on_screen(self):
-        window = tk.Tk()
+        window = self._tk
+        #window = tk.Toplevel()
         window.title("Star Map")
         star_names = []
         planet_names = []
@@ -210,7 +214,6 @@ class StarMap:
             x = math.cos(star[3]) * math.sin(star[2])
             y = math.cos(star[3]) * math.cos(star[2])
             if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
-                
                 width = 15 - star[4] * 2.5
                 height = 30 - star[4] * 5
                 #print(star)
@@ -228,17 +231,19 @@ class StarMap:
                     star_names.append(text)
                 else:
                     canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
-                    
-            
-        
-        
+                        
+
+
         for constellation in self._constellations:
-            print(constellation)
             if constellation.star in starsToStarID:
                 x,y = starsToStarID[constellation.star]
                 img = constellation.image
-                canvas.create_image(x, y, image= img, anchor = 'nw')
-        
+
+                print (x, y, img)
+                canvas.create_image(x, y, image= img, anchor='center')
+                print(constellation.name)
+                #canvas.create_text(x, y, constellation.name, fill="#FFFFFF")
+
         for planet in self._planets:
             x = math.cos(planet[2]) * math.sin(planet[1])
             y = math.cos(planet[2]) * math.cos(planet[1])
@@ -264,8 +269,6 @@ class StarMap:
             canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
-        
-
 
         # Add a button to the top of the window for saving images
         button = tk.Button(window, text="Save as Jpeg", command = lambda: self.save_image(canvas, "StarMap.jpg"))
@@ -293,30 +296,9 @@ class StarMap:
 # Create a main function to run the program
 def main():
     resolution = (800, 600)
-    star_map = StarMap(resolution)
+#    def __init__(self, lat, long, isNorth, isEast, time, resolution):
+    star_map = StarMap(0, 0, False, True, datetime(year=2001, month=2, day=22, tzinfo=timezone.utc), resolution=resolution)
     star_map.show_on_screen()
 
 if __name__ == '__main__':
     main()
-
-
-    """
-    
-    # define the button dimensions and position
-        button_width = 100
-        button_height = 50
-        button_x = 200
-        button_y = 200
-
-    # create the button rectangle
-        button_rect = canvas.create_rectangle(button_x, button_y, button_x + button_width, button_y + button_height, fill="blue")
-        # create the button text
-        button_text = canvas.create_text(button_x + button_width/2, button_y + button_height/2, text="Save Image", fill="white")
-        def button_click():
-            print("Button clicked!")
-            self.save_image( canvas, "starmap.jpeg")
-        
-        # bind the button click event to the button_click function
-        canvas.tag_bind(button_rect, "<Button-1>", lambda event: button_click())
-    
-    """

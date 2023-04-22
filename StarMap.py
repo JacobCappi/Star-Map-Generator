@@ -174,6 +174,7 @@ class StarMap:
         star_names = []
         planet_names = []
         con_names = []
+        obj_names = []
                 
         
         
@@ -233,7 +234,24 @@ class StarMap:
                 else:
                     canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="white")
                         
+        for object in self._messierObjects:      # the objects [num, name, az, alt]
+            x = math.cos(object[3]) * math.sin(object[2])
+            y = math.cos(object[3]) * math.cos(object[2])
+            if -0.5 < x < 0.5 and -0.5 < y < 0.5: 
+                width = 15 - star[4] * 2.5
+                height = 30 - star[4] * 5
+                #print(star)
+                x *= 2000
+                y *= 2000
 
+                x += 810
+                y += 540
+
+                canvas.create_oval(x-10, y-10, x+10, y+10, fill="red")
+                text = canvas.create_text(x,y+(width/2)+20, text=object[1], fill="red")
+                obj_names.append(text)
+        
+        
 
         for constellation in self._constellations:
             if constellation.star in starsToStarID:
@@ -270,6 +288,24 @@ class StarMap:
             x += 810
             y += 540
             canvas.create_oval(x-(width/2), y-(width/2), x+(width/2), y+(width/2), fill="#C8A2C8")
+            if self._moonPhase == 0:
+                canvas.create_text(x,y+(width/2)+15, text="New", fill="#C8A2C8")        
+            elif self._moonPhase == 1:
+                canvas.create_text(x,y+(width/2)+15, text="Waxing C", fill="#C8A2C8")       
+            elif self._moonPhase == 2:
+                canvas.create_text(x,y+(width/2)+15, text="First Q", fill="#C8A2C8")       
+            elif self._moonPhase == 3:
+                canvas.create_text(x,y+(width/2)+15, text="Waxing G", fill="#C8A2C8")       
+            elif self._moonPhase == 4:
+                canvas.create_text(x,y+(width/2)+15, text="Full", fill="#C8A2C8")       
+            elif self._moonPhase == 5:
+                canvas.create_text(x,y+(width/2)+15, text="Waning G", fill="#C8A2C8")       
+            elif self._moonPhase == 6:
+                canvas.create_text(x,y+(width/2)+15, text="Third Q", fill="#C8A2C8")       
+            else:
+                canvas.create_text(x,y+(width/2)+15, text="Waning C", fill="#C8A2C8")
+                
+
             canvas.create_text(x,y+(width/2)+5, text="Moon", fill="#C8A2C8")
         # Configure the canvas to scroll
         canvas.configure(scrollregion=canvas.bbox(tk.ALL))
@@ -289,6 +325,10 @@ class StarMap:
         # Add a button to the top of the window for show/hiding constellation names
         button3 = tk.Button(window, text="show/hide constellation names", command = lambda: self.showhide_names(canvas, con_names)) #needs to be constellation names
         button3.place(relx=0.5, rely=0, anchor="nw")
+        
+        # Add a button to the top of the window for show/hiding constellation names
+        button4 = tk.Button(window, text="show/hide messier object names", command = lambda: self.showhide_names(canvas, obj_names)) #needs to be constellation names
+        button4.place(relx=0.7, rely=0, anchor="nw")
 
 
         window.attributes('-fullscreen', True)
